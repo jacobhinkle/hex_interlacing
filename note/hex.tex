@@ -1,0 +1,144 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass{article}
+\usepackage{natbib}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+
+\title{Interlacing Algorithms for Hexagonal Grids}
+\author{Jacob Hinkle\\
+Oak Ridge National Laboratory\\
+hinklejd@ornl.gov \and Debangshu Mukherjee\\
+Oak Ridge National Laboratory\\
+mukherjeed@ornl.gov}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Progressive refinement of images\ldots{}
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Foo
+
+Motivation: optimal sampling with progressive
+
+Briefly discuss interlaced video.
+
+In this note, we introduce two methods akin to Adam7 for interlacing when using
+hexagonal grid sampling \citep{rfc2083}.
+%
+These methods are simple, scale to any required depth or resolution, and can be
+implemented with a series of simple rectilinear sampling grids.
+
+\cite{jeevan2014compression}
+
+
+\section{Background}
+\label{sec:bg}
+
+\subsection{The Adam7 Algorithm}
+\label{sec:adam7}
+
+The Adam7 algorithm
+
+\begin{verbatim}
+1 6 4 6 2 6 4 6
+7 7 7 7 7 7 7 7
+5 6 5 6 5 6 5 6
+7 7 7 7 7 7 7 7
+3 6 4 6 3 6 4 6
+7 7 7 7 7 7 7 7
+5 6 5 6 5 6 5 6
+7 7 7 7 7 7 7 7
+\end{verbatim}
+
+\begin{figure}[ht]
+\caption{\label{fig:squareinterlacing} Interlacing methods for rectilinear grids. Left: interlacing alternate lines is common in video. Center: Crocker interlacing for 2D images. Right: Adam7 interlacing developed for the PNG image format based on Crocker.}
+\end{figure}
+
+Note that although Adam7 contains 7 passes, it is trivially extended to
+any number of passes.
+
+\subsection{Wavelets and Other Methods}
+\label{sec:wavelets}
+
+Has hierarchical property and applies to hexagonal grids (c.f. Jeevan
+and Krishnakumar (2014)), but doesn't work for point sampling methods
+like in scanning electron microscopy modalities.
+
+
+\section{Hexagonal Interlacing Algorithms}
+\label{sec:hexinter}
+
+Here we explain two methods for interlacing hexagonal grids.
+%
+Each method is implemented using rectilinear grids.
+%
+The first method (double grid interlacing) requires only shifting the grids and doubling the resolution between passes.
+%
+The second method requires shifting, doubling, and rotating grids.
+
+
+\subsection{Basic Hex Interlacing}
+\label{double-grid-interlacing}
+
+A hexagonal grid can be constructed from two rectilinear grids, offset
+from one another by TODO, see fig.~\ref{fig:basicphases}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.7\textwidth]{basic_phases.png}
+\caption{
+\label{fig:basicphases} Refining a hex grid through multiple interlacing passes.
+%
+In each pass, previously sampled points are shown in gray.
+%
+Each pass consists of multiple rectilinear scans.
+}
+\end{figure}
+
+In the simplest hexagonal interlacing scheme, we duplicate the coarse hex grid using an additional two rectilinear grids, then fill the gaps with a double-resolution rectilinear grid to produce the double-resolution hex grid.
+
+\subsection{Rotational Hex Interlacing}
+\label{triple-grid-interlacing}
+
+Interlaced hex grids are constructed starting from a single point
+located at the origin.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.7\textwidth]{rotating_phases.png}
+\caption{
+\label{fig:rotatingphases} Refining a hex grid through multiple interlacing passes.
+%
+In each pass, previously sampled points are shown in gray.
+%
+Each pass consists of multiple rectilinear scans.
+}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{\label{fig:passsizes} Number of points in each pass, by method.}
+\end{figure}
+
+\subsection{Montaging}
+\label{sec:montaging}
+
+Work out how this works with montaging for basic and rotational hex interlacing.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\bibliographystyle{unsrt}
+\bibliography{hex}
+
+\end{document}
