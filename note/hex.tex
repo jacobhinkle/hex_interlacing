@@ -91,8 +91,8 @@ The second method requires shifting, doubling, and rotating grids.
 \subsection{Basic Hex Interlacing}
 \label{double-grid-interlacing}
 
-A hexagonal grid can be constructed from two rectilinear grids, offset
-from one another by TODO, see fig.~\ref{fig:basicphases}
+A hexagonal grid can be constructed from two identical rectilinear grids
+whose pixel spacings are a multiple of $[1, \sqrt{3}]^T$ and which are offset from one another by half that spacing (see Fig.~\ref{fig:basicphases}, Phase 1).
 
 \begin{figure}[ht]
 \centering
@@ -102,11 +102,19 @@ from one another by TODO, see fig.~\ref{fig:basicphases}
 %
 In each pass, previously sampled points are shown in gray.
 %
-Each pass consists of multiple rectilinear scans.
+Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 }
 \end{figure}
 
-In the simplest hexagonal interlacing scheme, we duplicate the coarse hex grid using an additional two rectilinear grids, then fill the gaps with a double-resolution rectilinear grid to produce the double-resolution hex grid.
+To refine a coarse hex grid with spacing $s$, we duplicate the grid shifted horizontally by $s/2$ and vertically by $\sqrt{3} s$ using two rectilinear grids.
+%
+The result is a rectilinear grid whose pixel spacing is $[s/2, \sqrt{3}]^T$.
+%
+We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $[s/2, \sqrt{3}/2]^T$.
+%
+We refer to one of these upscaling operations as a "phase" consisting of 3 rectilinear grids.
+%
+Additional phases are implemented identically, replacing $s$ with $s/2$.
 
 \subsection{Rotational Hex Interlacing}
 \label{triple-grid-interlacing}
@@ -122,7 +130,7 @@ located at the origin.
 %
 In each pass, previously sampled points are shown in gray.
 %
-Each pass consists of multiple rectilinear scans.
+Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 }
 \end{figure}
 
@@ -138,7 +146,7 @@ Work out how this works with montaging for basic and rotational hex interlacing.
 \section{Conclusion}
 \label{sec:conclusion}
 
-\bibliographystyle{unsrt}
+\bibliographystyle{unsrtnat}
 \bibliography{hex}
 
 \end{document}
