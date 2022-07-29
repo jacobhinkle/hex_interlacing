@@ -156,10 +156,24 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 \subsection{Montaging}
 \label{sec:montaging}
 
-Work out how this works with montaging for basic and rotational hex interlacing.
+- Very simple with basic method, but no overlap. In practice you need overlap in order to register
+
+- Rotating grid method enables overlap without doubling the dose in those regions!
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+Interlaced scan patterns provide a potential for whole-FOV information early in the scan pattern.
+%
+This could be used in a microscopy setting to correct for sample drift, or to salvage an image that is degraded due to late-stage beam-induced damage in dose-sensitive samples.
+%
+Particularly for these dose-sensitive samples, optimal sampling is desired which makes the use of hexagonal grids attractive.
+%
+The methods we have described in this note provide practical methods for achieving interlaced hexagonal scan patterns.
+%
+The basic method is readily implemented and easy to handle, as it provides a square (two-grid) hexagonal pattern which is easy to process.
+%
+The rotating pattern is ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling of the overlaps.
 
 \bibliographystyle{unsrtnat}
 \bibliography{hex}
