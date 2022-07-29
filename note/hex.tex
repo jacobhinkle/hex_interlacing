@@ -3,6 +3,10 @@
 \PassOptionsToPackage{hyphens}{url}
 %
 \documentclass{article}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 \usepackage{natbib}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -106,15 +110,24 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 }
 \end{figure}
 
-To refine a coarse hex grid with spacing $s$, we duplicate the grid shifted horizontally by $s/2$ and vertically by $\sqrt{3} s$ using two rectilinear grids.
+To refine a coarse hex grid with spacing $s$, we duplicate the grid shifted horizontally by $s/2$ and vertically by $\frac{\sqrt{3}}{2} s$ using two rectilinear grids.
 %
 The result is a rectilinear grid whose pixel spacing is $[s/2, \sqrt{3}]^T$.
 %
 We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $[s/2, \sqrt{3}/2]^T$.
 %
+These steps are shown in detail in Algorithm~\ref{alg:basic}
+%
 We refer to one of these upscaling operations as a "phase" consisting of 3 rectilinear grids.
 %
 Additional phases are implemented identically, replacing $s$ with $s/2$.
+
+\begin{algorithm}
+\caption{Basic hex interlacing algorithm.}\label{alg:basic}
+\begin{algorithmic}
+	\State $c \gets (0, 0)$
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Rotational Hex Interlacing}
 \label{triple-grid-interlacing}
