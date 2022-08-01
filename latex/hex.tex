@@ -4,6 +4,8 @@
 %
 \documentclass{article}
 
+\usepackage{authblk}
+
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
@@ -14,13 +16,16 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 
+\newcommand{\reffig}[1]{Fig.~\ref{fig:#1}}
+
 \title{Interlacing Algorithms for Hexagonal Grids}
-\author{Jacob Hinkle\\
-Oak Ridge National Laboratory\\
-hinklejd@ornl.gov \and Debangshu Mukherjee\\
-Oak Ridge National Laboratory\\
-mukherjeed@ornl.gov}
-\date{}
+\author{Jacob Hinkle\thanks{hinklejd@ornl.gov} }
+\author{Debangshu Mukherjee\thanks{mukherjeed@ornl.gov} }
+\affil{
+	%Computational Science and Engineering Division \\
+	Oak Ridge National Laboratory
+}
+%\texttt{\{hinklejd,mukherjeed\}@ornl.gov}}
 
 \begin{document}
 \maketitle
@@ -44,14 +49,14 @@ To date, the predominant method of scanning in most modalities uses a square pix
 %
 It is known that hexagonal grid patterns offer optimal sampling for circularly band-limited signals in the sense of minimizing aliasing for a given number of sample points~\citep{petersen1962}.
 %
+The availability of efficient hexagonal image processing methods makes the use of hexagonal grids in image processing more practical than in the past~\citep{birdsong2016hexfft,middleton2006hexagonal}.
+%
 In STEM, some attention has been given to alternative scan patterns including spiral patterns~\citep{sang2016dynamic}, but to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment.
 
 
 In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which acquire multiple images of increasing resolution each with a full field of view; such methods are known as interlacing methods.
 %
 Previous approaches to interlacing were designed to reduce the time to formation of an approximate image as additional data is transmitted over a bandwidth-limited connection.
-%
-The two most popular interlacing methods are scanline interlacing as in high-definition digital video, and Adam7 interlacing as part of the early portable network graphics (PNG) 2D image file format~\citep{rfc2083}.
 %
 The methods we introduce here extend these works to hexagonal grids, and discuss their characteristics in the context of optimal sampling for scanning imaging modalities.
 %
@@ -71,25 +76,43 @@ TODO: spiral scan patterns, other stuff??
 \section{Rectilinear Interlacing}
 \label{sec:rect}
 
-The Adam7 algorithm
+The two most popular interlacing methods are scanline interlacing as used in GIF and TGA file formats, and Adam7 interlacing as part of the early portable network graphics (PNG) 2D image file format~\citep{rfc2083}.
+%
+GIF/TGA: scanline interlacing. Similar to video interlacing
 
-\begin{verbatim}
-1 6 4 6 2 6 4 6
-7 7 7 7 7 7 7 7
-5 6 5 6 5 6 5 6
-7 7 7 7 7 7 7 7
-3 6 4 6 3 6 4 6
-7 7 7 7 7 7 7 7
-5 6 5 6 5 6 5 6
-7 7 7 7 7 7 7 7
-\end{verbatim}
+%
+Note that only one pass is done, but is easily extended to a 1D iterative upscaling we will call ``scanline interlacing''.
+
+
+The Adam7 algorithm is shown in \reffig{adam7phases}
+
+%\begin{verbatim}
+%1 6 4 6 2 6 4 6
+%7 7 7 7 7 7 7 7
+%5 6 5 6 5 6 5 6
+%7 7 7 7 7 7 7 7
+%3 6 4 6 3 6 4 6
+%7 7 7 7 7 7 7 7
+%5 6 5 6 5 6 5 6
+%7 7 7 7 7 7 7 7
+%\end{verbatim}
 
 \begin{figure}[ht]
-\caption{\label{fig:squareinterlacing} Interlacing methods for rectilinear grids. Left: interlacing alternate lines is common in video. Center: Crocker interlacing for 2D images. Right: Adam7 interlacing developed for the PNG image format based on Crocker.}
+\centering
+\includegraphics[trim=70 50 70 25,clip,width=.9\textwidth]{adam7_phases.pdf}
+\caption{\label{fig:adam7phases}
+The Adam7 interlacing method for rectilinear grids.
+%
+	Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (orange) of the grid.
+	}
 \end{figure}
 
-Note that although Adam7 contains 7 passes, it is trivially extended to
-any number of passes.
+
+After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
+%
+We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial image) and three upscaling phases.
+%
+Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
 
 
 \section{Hexagonal Interlacing Algorithms}
@@ -113,17 +136,21 @@ whose pixel spacings are a multiple of $[1, \sqrt{3}]^T$ and which are offset fr
 \begin{figure}[ht]
 \centering
 % trim=left bottom right top
-\includegraphics[trim=140 65 115 10,clip,width=.7\textwidth]{basic_phases.pdf}
+\includegraphics[
+	%trim=140 65 115 10,
+	clip,width=.9\textwidth]{basic_phases.pdf}
 \caption{
 \label{fig:basicphases} Refining a hex grid through multiple interlacing passes.
 %
 In each pass, previously sampled points are shown in gray.
 %
 Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+%
+TODO TODO: Fix method so that we don't drift left. Instead, alternate the orange dots horizontally...
 }
 \end{figure}
 
-To refine a coarse hex grid with spacing $s$, we duplicate the grid shifted horizontally by $s/2$ and vertically by $\frac{\sqrt{3}}{2} s$ using two rectilinear grids.
+To refine a coarse hex grid with spacing $s$, we duplicate the grid reflected horizontally and shifted vertically by $\frac{\sqrt{3}}{2} s$ using two rectilinear grids.
 %
 The result is a rectilinear grid whose pixel spacing is $[s/2, \sqrt{3}]^T$.
 %
@@ -145,13 +172,14 @@ Additional phases are implemented identically, replacing $s$ with $s/2$.
 \subsection{Rotational Hex Interlacing}
 \label{triple-grid-interlacing}
 
-Interlaced hex grids are constructed starting from a single point
+In this method, interlaced hex grids are constructed starting from a single point
 located at the origin.
 
 \begin{figure}[ht]
 \centering
 % trim=left bottom right top
-\includegraphics[trim=130 100 100 65,clip,width=.9\textwidth]{rotating_phases.pdf}
+\includegraphics[%trim=130 100 100 65,
+	clip,width=.95\textwidth]{rotating_phases.pdf}
 \caption{
 \label{fig:rotatingphases} Refining a hex grid through multiple interlacing passes.
 %
@@ -161,16 +189,49 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 }
 \end{figure}
 
-\begin{figure}[ht]
-\caption{\label{fig:passsizes} Number of points in each pass, by method.}
-\end{figure}
+\begin{table}[ht]
+	\centering
+\caption{\label{table:passsizes} Number of new pixels in each phase, by method.}
+\begin{tabular}{c|c|cccc}
+	Method & Scans per phase & Base & Phase 1 & Phase 2 & Phase 3 \\
+	\hline
+	% Scanline ala 720i/1080i is not an upscaling interlacing method, but GIF is
+	%GIF (scanline) & 1 & $HW$ & $HW$ & $2HW$ & $4HW$ \\
+	Crocker & 2 & & & & \\
+	Adam7 & 2 & $HW$ & $3HW$ & $13HW$ & $51HW$ \\
+	Basic Hex & 3 &  & 2 & 6 & \\
+	Rotating Hex & 3 & 0 & 7 & 24 & 96 \\
+\end{tabular}
+\end{table}
+
+\subsection{Sampling Density}
+\label{sec:density}
+
+Note that unlike in other methods, using this method there are missing pixels on the periphery of the upscaled scan pattern.
+%
+That is, an interior hexagon is covered fully after each phase, but the exterior hexagon containing all of the points is not fully sampled.
+%
+However, note that each of the three full-diamater lines is fully sampled in 1D after each pass.
+
+
+In this section, we characterize the density of sampling in various regions using the rotating hex interlacing method described above.
+%
+In order to derive expressions for sampling density, recall that each subgrid is a rotated rectilinear grid.
+%
+A single phase consists of two low-resolution subgrids followed by a subgrid with double the resolution, rotated 120 degrees clockwise.
+%
+In the central region, this results in a quadrupling of the sampling density after each phase.
+%
+This central region occupies one third of the overall area.
+%
+In the periphery, due to incomplete overlap, we must instead approximate the density.
 
 \subsection{Montaging}
 \label{sec:montaging}
 
-- Very simple with basic method, but no overlap. In practice you need overlap in order to register
+- Very simple with basic method, but no overlap. In practice you need overlap in order to register. You could achieve this with basic, but would require further splitting grids in order to interleave, like a comb (figure?).
 
-- Rotating grid method enables overlap without doubling the dose in those regions!
+- Rotating grid method enables overlap without doubling the dose in those regions! That does require image interpolation using an irregular set of points; it remains to be seen what impact that would have on image registration in practice.
 
 \section{Conclusion}
 \label{sec:conclusion}
