@@ -58,12 +58,18 @@ The methods we introduce here extend these works to hexagonal grids, and discuss
 Our methods are simple, scale to any required depth or resolution, and can be
 implemented with a series of simple rectilinear sampling grids.
 
+\subsection{Related Work}
+\label{sec:wavelets}
 
-\section{Background}
-\label{sec:bg}
+Wavelets have hierarchical property and apply to hexagonal grids~ \cite{jeevan2014compression}
+, but doesn't work for point sampling methods
+like in scanning electron microscopy modalities.
 
-\subsection{The Adam7 Algorithm}
-\label{sec:adam7}
+TODO: spiral scan patterns, other stuff??
+
+
+\section{Rectilinear Interlacing}
+\label{sec:rect}
 
 The Adam7 algorithm
 
@@ -84,13 +90,6 @@ The Adam7 algorithm
 
 Note that although Adam7 contains 7 passes, it is trivially extended to
 any number of passes.
-
-\subsection{Wavelets and Other Methods}
-\label{sec:wavelets}
-
-Has hierarchical property and applies to hexagonal grids~ \cite{jeevan2014compression}
-, but doesn't work for point sampling methods
-like in scanning electron microscopy modalities.
 
 
 \section{Hexagonal Interlacing Algorithms}
