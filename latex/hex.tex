@@ -18,7 +18,7 @@
 
 \newcommand{\reffig}[1]{Fig.~\ref{fig:#1}}
 
-\title{Interlacing Algorithms for Hexagonal Grids}
+\title{Interlacing Algorithms for Hexagonal Sampling Grids}
 \author{Jacob Hinkle\thanks{hinklejd@ornl.gov} }
 \author{Debangshu Mukherjee\thanks{mukherjeed@ornl.gov} }
 \affil{
@@ -99,7 +99,9 @@ The Adam7 algorithm is shown in \reffig{adam7phases}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[trim=70 50 70 25,clip,width=.9\textwidth]{adam7_phases.pdf}
+\includegraphics[
+	%trim=70 50 70 25,
+	clip,width=.9\textwidth]{adam7_phases.pdf}
 \caption{\label{fig:adam7phases}
 The Adam7 interlacing method for rectilinear grids.
 %
@@ -189,20 +191,12 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 }
 \end{figure}
 
-\begin{table}[ht]
-	\centering
-\caption{\label{table:passsizes} Number of new pixels in each phase, by method.}
-\begin{tabular}{c|c|cccc}
-	Method & Scans per phase & Base & Phase 1 & Phase 2 & Phase 3 \\
-	\hline
-	% Scanline ala 720i/1080i is not an upscaling interlacing method, but GIF is
-	%GIF (scanline) & 1 & $HW$ & $HW$ & $2HW$ & $4HW$ \\
-	Crocker & 2 & & & & \\
-	Adam7 & 2 & $HW$ & $3HW$ & $13HW$ & $51HW$ \\
-	Basic Hex & 3 &  & 2 & 6 & \\
-	Rotating Hex & 3 & 0 & 7 & 24 & 96 \\
-\end{tabular}
-\end{table}
+\begin{algorithm}
+\caption{Rotational hex interlacing algorithm.}\label{alg:rotating}
+\begin{algorithmic}
+	\State $c \gets (0, 0)$
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Sampling Density}
 \label{sec:density}
@@ -226,7 +220,68 @@ This central region occupies one third of the overall area.
 %
 In the periphery, due to incomplete overlap, we must instead approximate the density.
 
-\subsection{Montaging}
+
+\begin{figure}[ht]
+\centering
+% trim=left bottom right top
+\includegraphics[%trim=130 100 100 65,
+	clip,width=.6\textwidth]{converged_hex_density.pdf}
+\caption{
+\label{fig:hexdensity}
+Approximate relative sampling density (normalized to one in the interior fully sampled region) using rotational hex interlacing.
+%
+Each phase results in a rotation of this pattern by 60 degrees clockwise.
+%
+This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
+}
+\end{figure}
+
+\subsection{Trimmed Rotational Hex Interlacing}
+\label{sec:trimmed}
+
+The rotational hex interlacing method shown above results in a sampling density that peaks in an interior hexagon but includes a number of points outside this fully sampled region, as shown in \reffig{hexdensity}.
+%
+In some cases, only the fully sampled interior region is of interest, in which case any samples outside that region are wasteful.
+%
+In such situations, we simply trim the rectangular grids from 8x8 to 8x6 in Phase 3 in order to make them more square, while still completely covering the fully sampled interior.
+%
+Further phases require no modification as they merely double the grid.
+%
+The result is a method we call the trimmed rotational hex interlacing method and is shown in \reffig{trimmedrotatingphases}.
+%
+Using trimming, the interior sample density which constitutes only one third the overall area and half the total sample density
+
+\begin{figure}[ht]
+\centering
+% trim=left bottom right top
+%\includegraphics[%trim=130 100 100 65,
+	%clip,width=.95\textwidth]{trimmed_rotating_phases.pdf}
+\caption{
+\label{fig:trimmedrotatingphases} 
+The trimmed variant of the rotational hex interlacing method.
+%
+The interior hexagon is still fully sampled while sparing 25\% of the total samples in the periphery.
+}
+\end{figure}
+
+
+\begin{table}[ht]
+	\centering
+\caption{\label{table:passsizes} Number of new pixels in each phase, by method.}
+\begin{tabular}{c|c|cccc}
+	Method & Scans per phase & Base & Phase 1 & Phase 2 & Phase 3 \\
+	\hline
+	% Scanline ala 720i/1080i is not an upscaling interlacing method, but GIF is
+	%GIF (scanline) & 1 & $HW$ & $HW$ & $2HW$ & $4HW$ \\
+	Crocker & 2 & & & & \\
+	Adam7 & 2 & $HW$ & $3HW$ & $13HW$ & $51HW$ \\
+	Basic Hex & 3 &  & 2 & 6 & \\
+	Rotational Hex & 3 & 0 & 7 & 24 & 96 \\
+	Trimmed Rotational Hex & & & &
+\end{tabular}
+\end{table}
+
+\subsection{Impact on Montaging}
 \label{sec:montaging}
 
 - Very simple with basic method, but no overlap. In practice you need overlap in order to register. You could achieve this with basic, but would require further splitting grids in order to interleave, like a comb (figure?).
