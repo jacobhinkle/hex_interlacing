@@ -19,8 +19,10 @@
 \newcommand{\reffig}[1]{Fig.~\ref{fig:#1}}
 
 \title{Hexagonal Scan Interlacing}
-\author{Jacob Hinkle\thanks{hinklejd@ornl.gov} }
-\author{Debangshu Mukherjee\thanks{mukherjeed@ornl.gov} }
+\author{Jacob Hinkle\thanks{hinklejd@ornl.gov} 
+}
+\author{Debangshu Mukherjee\thanks{mukherjeed@ornl.gov}
+}
 \affil{
 	%Computational Science and Engineering Division \\
 	Oak Ridge National Laboratory
@@ -29,6 +31,11 @@
 
 \begin{document}
 \maketitle
+{
+\renewcommand{\thefootnote}{}
+\footnote{We acknowledge that this manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. DOE will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (http://energy.gov/downloads/doe-public-access-plan). This research is sponsored by the Artificial Intelligence Initiative and the Interconnected Science Ecosystem (INTERSECT) Initiative as part of the Laboratory Directed Research and Development Program of Oak Ridge National Laboratory.}
+\setcounter{footnote}{0}
+}
 \begin{abstract}
 	Progressive acquisition of slowly-scanned images is desirable for drift-correction and realtime visualization.
 	%
