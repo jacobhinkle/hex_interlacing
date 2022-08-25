@@ -4,7 +4,6 @@ pkgs.mkShell {
     texlive.combined.scheme-full
   ] ++ (with pkgs.python3Packages; [
     jupyter
-    jupyterlab
     matplotlib
     numpy
     ipympl
