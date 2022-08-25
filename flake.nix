@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Source code for 'Hexagonal Scan Interlacing' paper";
 
   outputs = { self, nixpkgs }: {
     packages.x86_64-linux.default =

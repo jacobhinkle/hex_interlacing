@@ -1,4 +1,4 @@
-# Code and source for "Hexagonal Scan Interlacing"
+# Python and LaTeX for "Hexagonal Scan Interlacing"
 
 The code for this small paper is found entirely in the
 `notebooks/HexInterlacing.ipynb` jupyter notebook. The requirements are minimal
