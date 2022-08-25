@@ -8,7 +8,9 @@
         name = "hexpdf";
         src = self;
         buildInputs = with pkgs; [
-          texlive.combined.scheme-full
+          (texlive.combine { inherit (texlive) scheme-medium
+          preprint  # for authblk.sty
+          latexmk; })
         ] ++ (with pkgs.python3Packages; [
           jupyter
           matplotlib
