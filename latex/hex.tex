@@ -9,6 +9,8 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage{hyperref}
+
 \usepackage{natbib}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
@@ -90,14 +92,14 @@ In the present work we extend conventional image interlacing to hexagonal grids 
 Our methods are simple, scale to any required depth or resolution, and can be
 implemented with a series of simple rectilinear sampling grids.
 
-\subsection{Related Work}
-\label{sec:wavelets}
+%\subsection{Related Work}
+%\label{sec:wavelets}
 
-Wavelets have hierarchical property and apply to hexagonal grids~ \citep{jeevan2014compression}
-, but doesn't work for point sampling methods
-like in scanning electron microscopy modalities.
+%Wavelets have hierarchical property and apply to hexagonal grids~ \citep{jeevan2014compression}
+%, but doesn't work for point sampling methods
+%like in scanning electron microscopy modalities.
 
-TODO: spiral scan patterns, other stuff??
+%TODO: spiral scan patterns, other stuff??
 
 
 \section{Rectilinear Interlacing}
@@ -105,26 +107,41 @@ TODO: spiral scan patterns, other stuff??
 
 The two most popular interlacing methods are scanline interlacing as used in GIF and TGA file formats, and Adam7 interlacing as part of the early portable network graphics (PNG) 2D image file format~\citep{rfc2083}.
 %
-GIF/TGA: scanline interlacing. Similar to video interlacing
-
+In scanline interlacing, full-resolution scanlines (rows) are acquired at each
+phase, with the number of rows doubling until sufficient vertical resolution is
+acquired (\reffig{scanlinephases}).
 %
-Note that only one pass is done, but is easily extended to a 1D iterative upscaling we will call ``scanline interlacing''.
+This is similar to standards in over-the-air transmission of digital video, such
+as progressive segmented frame and interlaced 1080i HDTV following the ITU-R
+BT.709-6, in which odd and even scanlines are transmitted separately to enable higher
+framerates using interpolation of missing scanlines.
+
+\begin{figure}[hb]
+\centering
+\includegraphics[
+	%trim=70 50 70 25,
+	clip,width=.9\textwidth]{../figs/scanline_phases.pdf}
+\caption{\label{fig:scanlinephases}
+    Scanline interlacing method for rectilinear grids.
+    %
+    Each circle represents a sample point (acquired pixel).
+    %
+    Starting from an initial grid (Phase 1), each subsequent phase consists of
+    doubling the rows of the grid by acquiring a new subscan (blue).
+	}
+\end{figure}
+
+The Adam7 algorithm extends scanline interlacing by alternatively upscaling in
+each dimension, as is shown in \reffig{adam7phases}.
+%
+After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
+%
+We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial image) and three upscaling phases.
+%
+Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
 
 
-The Adam7 algorithm is shown in \reffig{adam7phases}
-
-%\begin{verbatim}
-%1 6 4 6 2 6 4 6
-%7 7 7 7 7 7 7 7
-%5 6 5 6 5 6 5 6
-%7 7 7 7 7 7 7 7
-%3 6 4 6 3 6 4 6
-%7 7 7 7 7 7 7 7
-%5 6 5 6 5 6 5 6
-%7 7 7 7 7 7 7 7
-%\end{verbatim}
-
-\begin{figure}[ht]
+\begin{figure}[th]
 \centering
 \includegraphics[
 	%trim=70 50 70 25,
@@ -135,13 +152,6 @@ The Adam7 interlacing method for rectilinear grids.
 	Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
 	}
 \end{figure}
-
-
-After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
-%
-We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial image) and three upscaling phases.
-%
-Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
 
 
 \section{Hexagonal Interlacing Algorithms}
@@ -372,7 +382,8 @@ Subscan lengths as portion of overall scan time for various approaches.
 %
 Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan.
 %
-TODO: Color each segment the same color as in the phases diagram
+    Colors match those shown in
+    Figs.~\ref{fig:adam7phases}--\ref{fig:trimmedrotatingphases}.
 }
 \end{figure}
 
@@ -400,7 +411,7 @@ The basic method is readily implemented and easy to handle, as it provides a squ
 The rotating pattern is ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
 
 
-TODO: note that rotational pattern rotates the "fast and slow axes" among six directions, and that this is possible for the basic and rectilinear scans rotating among the four cardinal directions. In the presence of drift this may be helpful for reducing or detecting distortion.
+TODO: note that rotational pattern rotates the ``fast and slow axes'' among six directions, and that this is possible for the basic and rectilinear scans rotating among the four cardinal directions. In the presence of drift this may be helpful for reducing or detecting distortion.
 
 
 TODO: note that these methods are designed for use with controllers that accept rectilinear grids only.
