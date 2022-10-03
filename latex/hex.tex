@@ -45,37 +45,47 @@
 	%
 	It has long been known that optimal sampling of band-limited signals is achieved using hexagonal scanning grids.
 	%
-	In this note, we demonstrate two new methods for interlacing hexagonal grids, which enable full field-of-view imaging with optimal sampling and resolution doubling.
+	In this note, we demonstrate two new methods for interlacing hexagonal
+    grids, which enable early full field-of-view imaging with optimal sampling and resolution doubling.
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
 
-Typically, digital images are acquired using a charge-coupled device (CCD) which provides an image supported on a rectilinear grid.
+Typically, digital images are acquired using a charge-coupled device (CCD) which provides an image supported on a rectilinear grid of pixels.
 %
-However, in some modalities a subject is instead probed in a predefined (and often programmable) pattern to obtain a grid of point measurements.
+However, in some devices a subject is instead probed in a predefined programmable pattern to obtain a grid of point measurements.
 %
 This is the case in scanning probe microscopy (SPM), scanning transmission electron microscopy (STEM), confocal laser scanning microscopy, and others.
 %
 %In these scanning modalities, sample efficiency and other practical factors are often of the utmost importance.
-Particularly when imaging sensitive subjects using invasive modalities such as STEM, sampling efficiency is critical to obtaining useful images before beam-induced damage ruins the sample.
-%
-To date, the predominant method of scanning in most modalities uses a square pixel grid scan pattern.
-%
-It is known that hexagonal grid patterns offer optimal sampling for circularly band-limited signals in the sense of minimizing aliasing for a given number of sample points~\citep{petersen1962}.
-%
-The availability of efficient hexagonal image processing methods makes the use of hexagonal grids in image processing more practical than in the past~\citep{birdsong2016hexfft,middleton2006hexagonal}.
-%
-There has been some study of hexagonal scan patterns in scanning optical microscopy~\citep{heintzmann2007}.
-%
-In STEM, some attention has been given to alternative scan patterns including spiral patterns~\citep{sang2016dynamic}, but to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment.
+Particularly when imaging sensitive subjects using invasive modalities such as
+these, sampling efficiency is critical to obtaining useful images before probe-induced damage ruins the sample.
 
 
-In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which acquire multiple images of increasing resolution each with a full field of view; such methods are known as interlacing methods.
+To date, the predominant approach used in most scanning modalities is to use a square pixel grid scan pattern wherein each pixel has four equidistant nearest neighbors.
 %
-Previous approaches to interlacing were designed to reduce the time to formation of an approximate image as additional data is transmitted over a bandwidth-limited connection.
+However, it has long been known that hexagonal grid patterns offer optimal sampling for circularly band-limited signals in the sense of minimizing aliasing for a given number of sample points~\citep{petersen1962}.
 %
-The methods we introduce here extend these works to hexagonal grids, and discuss their characteristics in the context of optimal sampling for scanning imaging modalities.
+The availability of efficient hexagonal image processing methods makes the use
+of hexagonal grids in image processing more practical now than in the past~\citep{birdsong2016hexfft,middleton2006hexagonal}.
+%
+There has been some study of hexagonal scan patterns in scanning optical
+microscopy~\citep{heintzmann2007}, while in STEM some attention has been given to alternative scan patterns including spiral patterns~\citep{sang2016dynamic}, but to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment.
+
+
+In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which process multiple images of increasing resolution each with a full field of view; such methods are referred to as interlacing methods.
+%
+Previous approaches to interlacing were designed to enable interpolation of a
+high-resolution image while the image is transmitted over a bandwidth-limited connection.
+%
+We notice that full-FOV multi-pass scanning via interlacing offers a number of
+advantages in scientific imaging despites its apparent added complexity: for
+example it enables iterative reconstruction to begin while data is still being
+acquired, and successive passes offer information that could be used to correct
+for sample and instrument drift.
+%
+In the present work we extend conventional image interlacing to hexagonal grids and discuss their characteristics in the context of optimal sampling for scanning imaging modalities.
 %
 Our methods are simple, scale to any required depth or resolution, and can be
 implemented with a series of simple rectilinear sampling grids.
