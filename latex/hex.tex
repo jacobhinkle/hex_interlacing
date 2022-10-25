@@ -139,7 +139,8 @@ each dimension, as is shown in \reffig{adam7phases}.
 %
 After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
 %
-We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial image) and three upscaling phases.
+We refer to two of these consecutive passes as a ``phase'', so that Adam7
+consists of a base phase (initial low-resolution image) and three upscaling phases.
 %
 Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
 
@@ -198,7 +199,7 @@ We then fill the gaps with a double-resolution rectilinear grid to produce the f
 %
 %These steps are shown in detail in Algorithm~\ref{alg:basic}
 %
-We refer to one of these upscaling operations as a "phase" consisting of 3 rectilinear grids.
+We refer to one of these upscaling operations as a ``phase'' consisting of 3 rectilinear grids.
 %
 Additional phases are implemented identically, replacing $s$ with $s/2$.
 
@@ -210,9 +211,14 @@ Additional phases are implemented identically, replacing $s$ with $s/2$.
 %\end{algorithm}
 
 
-Note the similarities between this basic hex interlacing method and Adam7~(\reffig{basicphases}).
+%
+The first two subgrids (shown in blue and orange in \reffig{basicphases}) have the effect of doubling resolution in one direction
+resulting in a rectilinear grid, and the third subgrid (shown in green) doubles resolution in the orthogonal direction but must be
+offset horizontally resulting in a new hexagonal grid.
+%
+This method is thus a straightforward extension of Adam7 to hexagonal grids, and
+is simple to implemente.
 
-TODO: more detail on similarities to Adam7
 
 \subsection{Rotational Hex Interlacing}
 \label{triple-grid-interlacing}
@@ -254,7 +260,7 @@ TODO: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph dis
 
 TODO: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
 
-\subsection{Sampling Density}
+\subsubsection{Sampling Density}
 \label{sec:density}
 
 Note that unlike in other methods, using this method there are missing pixels on the periphery of the upscaled scan pattern.
@@ -262,6 +268,15 @@ Note that unlike in other methods, using this method there are missing pixels on
 That is, an interior hexagon is covered fully after each phase, but the exterior hexagon containing all of the points is not fully sampled.
 %
 However, note that each of the three full-diamater lines is fully sampled in 1D after each pass.
+
+
+TODO: Note how exactly this is an asymptotic result. Start with noting three
+rectangular grids, rotating every time the res doubles in one dim (thus doubling
+density). After three rotations the pattern repeats. Further sets of 3
+iterations adds an amount proportional to this pattern, so doesn't change the
+pattern.  Note that convergence only for three interwoven subseries (i.e.
+depends where you stop whether it's this pattern or the two rotated versions
+at +/- 120 degrees).
 
 
 In this section, we characterize the density of sampling in various regions using the rotating hex interlacing method described above.
@@ -275,6 +290,11 @@ In the central region, this results in a quadrupling of the sampling density aft
 This central region occupies one third of the overall area.
 %
 In the periphery, due to incomplete overlap, we must instead approximate the density.
+
+
+TODO: explain the asymptotic sampling density and refer to \reffig{hexdensity}.
+%
+The central region is 1/3 total area, but half of all points.
 
 \subsection{Trimmed Rotational Hex Interlacing}
 \label{sec:trimmed}
@@ -326,16 +346,16 @@ By comparison, the basic interlacing method, while simple to implement, results 
 	clip,width=.49\textwidth]{../figs/converged_hex_density_trimmed.pdf}
 \caption{
 \label{fig:hexdensity}
-	Asymptotic sampling density (normalized to the interior fully sampled region) using rotational hex interlacing (left) and its trimmed variant (right).
+	Asymptotic sampling density (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
 %
 Each phase results in a rotation of this pattern by 60 degrees clockwise.
 %
 This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
 %
 %Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
-TODO: Include square pattern sized to cover interior region.
+%TODO: Include square pattern sized to cover interior region.
 %
-TODO: Renormalize plots to sum to one (area weighted), showing increased density in interior due to trimming.
+%TODO: Renormalize plots to sum to one (area weighted), showing increased density in interior due to trimming.
 %
 }
 \end{figure}
@@ -348,7 +368,7 @@ TODO: Renormalize plots to sum to one (area weighted), showing increased density
 	clip,width=.7\textwidth]{../figs/angular_density.pdf}
 \caption{
 \label{fig:angdens} 
-	Asymptotic angular distribution of samples using each of the proposed methods.
+	Asymptotic angular distribution of sample points using each of the proposed methods.
 	%
 	%Each method was normalized to have equal area (same total number of sample points).
 }
@@ -357,7 +377,8 @@ TODO: Renormalize plots to sum to one (area weighted), showing increased density
 \subsection{Recursive Rectilinear Interlacing}
 \label{sec:recursive}
 
-One of the key motivations for interlaced scanning is to enable full-FOV tracking during sample acquisition.
+One of the key motivations for interlaced scanning is to enable full-FOV
+tracking and reconstruction during sample acquisition.
 %
 However, in the methods listed above the last rectilinear subscan contains approximately half of the overall number of points.
 %
@@ -378,7 +399,7 @@ The effect of this further interlacing is shown in \reffig{subscanlengths}, show
 \includegraphics[%trim=130 100 100 65,
 	clip,width=.95\textwidth]{../figs/subscan_splits_color.pdf}
 \caption{
-\label{fig:subscansplits} 
+\label{fig:subscanlengths} 
 Subscan lengths as portion of overall scan time for various approaches.
 %
 Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan.
