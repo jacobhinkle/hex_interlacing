@@ -410,35 +410,124 @@ Within each row, each colored bar represents a single rectilinear subscan and it
 \end{figure}
 
 
-\subsection{Impact on Montaging}
+\subsection{Montaging Considerations}
 \label{sec:montaging}
 
-- Very simple with basic method, but no overlap. In practice you need overlap in order to register. You could achieve this with basic, but would require further splitting grids in order to interleave, like a comb (figure?).
+It is common practice in microscopy to acquire images in a
+``montage'' containing multiple scan locations, then stitch them together to
+effectively image a larger FOV than is possible with a single scan.
+%
+The montage is typically planned with 10-20\% overlap between neighboring scans,
+in order to facilitate the image registration methods required for stitching.
+%
+When the individual scans in a montage (called tiles) are rectilinear, it is
+natural to also use a rectilinear montaging grid, resulting in $2\times$ oversampling
+along linear edges, and $4\times$ oversampling in each corner of interior images in
+the montage (see \reffig{montage}).
+%
+% NOTE: below is one way to avoid this even for rect tilings...
+%Such oversampling might be avoided by splitting each rectangular tile into four
+%rectangular tiles, shifting the first and second tiles horizontally, and
+%shiftin gthe first and third tiles vertically.
 
-- Rotating grid method enables overlap without doubling the dose in those regions! That does require image interpolation using an irregular set of points; it remains to be seen what impact that would have on image registration in practice.
+
+Basic hex interlacing results in a square or rectangular image, so it naturally
+fits into existing montaging schemes using rectilinear supergrids.
+%
+However, rotational hex interlacing (RHI) and its trimmed variant (TRHI) result in
+hexagonal scan patterns with variable point densities within each tile, as shown
+in \reffig{hexdensity}.
+%
+This suggests using a hexagonal montaging grid that leverages this
+non-uniformity to enable sufficient overlap for stitching without introducing
+excessive and potentially wasteful oversampling.
+%
+The impact on image registration due to differing sampling densities for various
+montaging strategies depends on the image modality and registration method used;
+here we only analyze the overall sampling density of hexagonal interlacing grids
+when forming a large montage.
+
+
+A hexagonal supergrid can be produced by aligning the centers of each small
+hexagonally-shaped tile relative to the orientation of its fully-sampled
+interior hexagon.
+%
+Two schemes in particular lead to rotationally symmetric montaging grids (see \reffig{montage}).
+%
+We refer to the scheme in which fully-sampled hexagonal interiors are aligned
+without gaps along their sides as a ``tight'' montage, while we refer to
+aligning them along their vertices introducing small triangular gaps as a
+``loose'' montage.
+%
+Notice that in a loose montage, due to the partial sampling outside of the
+interior hexagons, some information exists that can be used for alignment, even
+though no fully-sampled regions are overlapped.
+
+
+
+For reference, the standard approach to rectilinear montaging with overlap
+$0<\ell<1$ results in an oversampling factor of $\frac{1}{(1-\ell)^2}$, equal to
+$1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
+%
+The oversampling of RHI using a tight grid is exactly $2\times$ (equivalent rectilinear
+overlap: 29.3\%).
+%
+To see this, split the sampling pattern shown in \reffig{hexdensity} into three
+rectangles and notice that each rectangle is part of a tightly packed
+rectangular grid with $2\times$ oversampling.
+%
+Using trimming (TRHI) reduces oversampling from $2\times$ to 4/3 (equivalent rectlinear
+overlap: 13.4\%), by introducing gaps into the rectangular grids.
+%
+If instead a loose montage grid is used, then using TRHI results in uniform
+overall sampling density of $1\times$ (equivalent rectilinear overlap: 0\%), since the
+undersampled exterior portions overlap perfectly (under zero misalignment).
+%
+Unlike with a 0\% overlap rectilinear grid, the loose TRHI montage still has
+significant overlap, with each tile overlapping all of its six neighbors.
+%
+Using RHI in the loose configuration without trimming presents an alternative
+with more overlap and an average oversampling of $1.5\times$ (equivalent rectilinear
+overlap: 18.4\%).
+
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-Interlaced scan patterns provide a potential for whole-FOV information early in the scan pattern.
+Interlaced scan patterns provide a potential for whole-FOV information very
+early during scan acquisition.
 %
-This could be used in a microscopy setting to correct for sample drift during the scan, or to salvage an image that is degraded due to late-stage beam-induced damage in dose-sensitive samples.
+In a microscopy setting this could be useful in estimating and correcting for sample drift during the scan, or to salvage an image that is degraded due to late-stage beam-induced damage in dose-sensitive samples.
 %
 Particularly for these dose-sensitive samples, optimal sampling is desired which makes the use of hexagonal grids attractive.
 %
 The methods we have described in this note provide practical methods for achieving interlaced hexagonal scan patterns.
 %
+We have specifically designed these methods for use in controllers that are only
+capable of performing rectilinear scans.
+%
 The basic method is readily implemented and easy to handle, as it provides a square (two-grid) hexagonal pattern which is easy to process.
 %
-The rotating pattern is ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
+The rotating pattern (and its trimmed variant) is ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
+%
 
 
-TODO: note that rotational pattern rotates the ``fast and slow axes'' among six directions, and that this is possible for the basic and rectilinear scans rotating among the four cardinal directions. In the presence of drift this may be helpful for reducing or detecting distortion.
+Rotational interlacing is achieved by rotation of the fast scan axis among 6
+equally spaced directions.
+%
+In the presence of sample drift, flyback delays, or lash in the scanning device,
+this may enable detection of non-uniform distortion that would be
+indistinguishable from image structure when using fixed fast and slow imaging
+axes.
+%
+Rotation of the fast axis is also possible in rectilinear scanning, but only 4
+axes will be available in that case instead of six.
 
 
-TODO: note that these methods are designed for use with controllers that accept rectilinear grids only.
-
-TODO: Note that we envision uses for interleaving including drift detection/correction.
+The optimal sampling efficiency of hexagonal grids, along with the potential for
+montaging without increasing the dose (using TRHI and a loose grid), present an
+attractive opportunity for development of modality-specific methods to enable
+large-FOV imaging of dose-sensitive samples.
 
 \bibliographystyle{unsrtnat}
 \bibliography{hex}
