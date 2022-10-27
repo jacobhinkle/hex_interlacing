@@ -6,6 +6,9 @@
 
 \usepackage{authblk}
 
+\usepackage{caption}
+\usepackage{subcaption}
+
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
@@ -256,9 +259,9 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 %\end{algorithmic}
 %\end{algorithm}
 
-TODO: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph distance of the origin are included in the fully-sampled interior region.
+%TODO: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph distance of the origin are included in the fully-sampled interior region.
 
-TODO: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
+%TODO: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
 
 \subsubsection{Sampling Density}
 \label{sec:density}
@@ -430,6 +433,35 @@ the montage (see \reffig{montage}).
 %rectangular tiles, shifting the first and second tiles horizontally, and
 %shiftin gthe first and third tiles vertically.
 
+\begin{figure}[ht]
+\centering
+% trim=left bottom right top
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[trim=100 40 90 40,
+            clip,width=\textwidth]{../figs/square_montage.pdf}
+        \caption{Square montage}
+        \label{fig:square montage}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[trim=100 40 90 40,
+            clip,width=\textwidth]{../figs/hex_montage_tight_untrimmed.pdf}
+        \caption{Tight hex montage}
+        \label{fig:tight hex montage}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[trim=100 40 90 40,
+            clip,width=\textwidth]{../figs/hex_montage_loose_untrimmed.pdf}
+        \caption{Loose hex montage}
+        \label{fig:loose hex montage}
+    \end{subfigure}
+    \caption{Montaging schemes}
+\label{fig:montage} 
+\end{figure}
 
 Basic hex interlacing results in a square or rectangular image, so it naturally
 fits into existing montaging schemes using rectilinear supergrids.
