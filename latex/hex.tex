@@ -105,9 +105,6 @@ Code for generating this manuscript and all figures included is available at
 %, but doesn't work for point sampling methods
 %like in scanning electron microscopy modalities.
 
-%TODO: spiral scan patterns, other stuff??
-
-
 \section{Rectilinear Interlacing}
 \label{sec:rect}
 
@@ -259,9 +256,9 @@ Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
 %\end{algorithmic}
 %\end{algorithm}
 
-%TODO: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph distance of the origin are included in the fully-sampled interior region.
+%NOTE: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph distance of the origin are included in the fully-sampled interior region.
 
-%TODO: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
+%NOTE: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
 
 \subsubsection{Sampling Density}
 \label{sec:density}
@@ -271,15 +268,6 @@ Note that unlike in other methods, using this method there are missing pixels on
 That is, an interior hexagon is covered fully after each phase, but the exterior hexagon containing all of the points is not fully sampled.
 %
 However, note that each of the three full-diamater lines is fully sampled in 1D after each pass.
-
-
-TODO: Note how exactly this is an asymptotic result. Start with noting three
-rectangular grids, rotating every time the res doubles in one dim (thus doubling
-density). After three rotations the pattern repeats. Further sets of 3
-iterations adds an amount proportional to this pattern, so doesn't change the
-pattern.  Note that convergence only for three interwoven subseries (i.e.
-depends where you stop whether it's this pattern or the two rotated versions
-at +/- 120 degrees).
 
 
 In this section, we characterize the density of sampling in various regions using the rotating hex interlacing method described above.
@@ -295,9 +283,55 @@ This central region occupies one third of the overall area.
 In the periphery, due to incomplete overlap, we must instead approximate the density.
 
 
-TODO: explain the asymptotic sampling density and refer to \reffig{hexdensity}.
+In order to analyze sampling density of rotational hex interlacing methods, we
+consider limits of the sample point sets as we perform an ever-increasing number
+of interlacing phases.
 %
-The central region is 1/3 total area, but half of all points.
+Each phase resembles the previous phase rotated by 120 degrees, resulting in
+three subsequences that each independently converge to the same (but rotated)
+normalized sampling density.
+%
+More rigorously, denoting by $\mu_p$ the discrete probability measure supported
+at all points in the phases up to and including phase $p$ and placing uniform
+mass at each point, the subsequences $\mu_{3k+i}$
+converge in measure to some continuous measures $\mu_1,\mu_2,\mu_3$ as
+$k\to\infty$ for $i=1,2,3$.
+%
+To see that the limit is a continuous measure, note that rotational hex
+interlacing consists of repeated applications of rectangular grids, and that
+each of the three subsequences contains the same repeated grids with
+ever-increasing numbers of points, resulting in three limiting distributions
+which are themselves superpositions of three indicator functions over the
+rotated rectangles.
+%
+Furthermore, these limiting measures are simple 120 degree rotations of one
+another, so we only examine one in detail.
+
+
+To see that each subsequence converges, consider a sequence consisting of a
+fixed pattern for one phase (i.e. no 120 degree rotation), but instead applying
+the inverse 120 degree rotation to all previous points.
+%
+Since we cannot change the locations of previously-acquired points, this
+situation is non-physical, but is useful for analyzing the limiting behavior,
+as it results in a situation where the same update is applied repeatedly.
+%
+Since a growing number of points are added during each phase (exactly double),
+the limiting density must be equal to the average of itself and a version of
+itself inversely rotated by 120 degrees.
+%
+As each phase consists of three rectangles oriented at 120 degrees to one
+another, it is easy to see that assigning values of 1, 2, and 4 to these
+rectangles satisfies this condition (see the left-hand panel of
+\reffig{hexdensity}).
+%
+Note that in the figure, integer values are shown instead of normalized point
+densities, in order to more clearly display the relative sampling densities in
+each region.
+%
+The darkest central region occupies only one third of total sampled area, but
+contains half of all sample points.
+%
 
 \subsection{Trimmed Rotational Hex Interlacing}
 \label{sec:trimmed}
@@ -334,9 +368,8 @@ The interior hexagon is still fully sampled while sparing 50\% of samples in the
 With trimming, the sampling density in the interior is unchanged but undersampled regions in the periphery are sampled even less.
 %
 This results in a concentration of points in the hexagonal-shaped interior region.
-
-
-TODO: Finish out this section showing that interior after trimming is same \# points as best-case inscribed hex for a rectangular FOV and basic interlacing.
+%
+%NOTE: Finish out this section showing that interior after trimming is same \# points as best-case inscribed hex for a rectangular FOV and basic interlacing.
 %
 By comparison, the basic interlacing method, while simple to implement, results in a less uniform angular distribution of points than the trimmed rotational method~(see \reffig{angdens}).
 
@@ -351,15 +384,11 @@ By comparison, the basic interlacing method, while simple to implement, results 
 \label{fig:hexdensity}
 	Asymptotic sampling density (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
 %
-Each phase results in a rotation of this pattern by 60 degrees clockwise.
+Each phase results in a rotation of this pattern by 120 degrees clockwise.
 %
-This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
+%This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
 %
-%Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
-%TODO: Include square pattern sized to cover interior region.
-%
-%TODO: Renormalize plots to sum to one (area weighted), showing increased density in interior due to trimming.
-%
+Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
 }
 \end{figure}
 
@@ -440,7 +469,7 @@ the montage (see \reffig{montage}).
         \centering
         \includegraphics[trim=100 40 90 40,
             clip,width=\textwidth]{../figs/square_montage.pdf}
-        \caption{Square montage}
+        \caption{Square montage (25\% overlap)}
         \label{fig:square montage}
     \end{subfigure}
     \hfill
@@ -459,7 +488,22 @@ the montage (see \reffig{montage}).
         \caption{Loose hex montage}
         \label{fig:loose hex montage}
     \end{subfigure}
-    \caption{Montaging schemes}
+    \caption{Montaging schemes for square and hexagonal scan patterns.
+    %
+    Individual tiles are shown in red, while other tiles are shown in gray.
+    %
+    In each hexagonal pattern, the envelope of partially sampled locations for
+    each tile is shown in a lighter shade, while the interior darker hexagon
+    indicates the region of each tile that is fully sampled.
+    %
+    In the tight hex montage scheme, neighboring interior regions share an edge
+    with each of their six neighbors, while in the loose scheme they instead
+    share only a vertex, leaving a partially sampled triangular gap between each
+    set of three mutual neighbor tiles.
+    %
+    Using TRHI, these triangular regions overlap perfectly resulting in uniform
+    expected sampling density across the grid, while maintaining overlap required for
+    stitching.}
 \label{fig:montage} 
 \end{figure}
 
