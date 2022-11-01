@@ -344,7 +344,7 @@ In such situations, we simply trim the rectangular grids from 8x8 to 8x6 in
 Phase 3 in order to make them more square, while still completely covering the
 fully sampled interior.
 %
-We continue trimming of a single row from each end of the pattern after
+We continue trimming off a single row from each end of the pattern after
 every second phase (i.e. on all subsequent odd phases).
 %
 It is easy to check that this results in a pattern with
@@ -509,7 +509,7 @@ the montage (see \reffig{montage}).
     In the tight hex montage scheme, neighboring interior regions share an edge
     with each of their six neighbors, while in the loose scheme they instead
     share only a vertex, leaving a partially sampled triangular gap between each
-    set of three mutual neighbor tiles.
+    set of three neighboring tiles.
     %
     Using TRHI, these triangular regions overlap perfectly resulting in uniform
     expected sampling density across the grid, while maintaining overlap required for
@@ -580,21 +580,20 @@ overlap: 18.4\%).
 \section{Conclusion}
 \label{sec:conclusion}
 
-Interlaced scan patterns provide a potential for whole-FOV information very
-early during scan acquisition.
+Interlaced scan patterns provide a potential for whole-FOV information to be acquired very early in the scan.
 %
 In a microscopy setting this could be useful in estimating and correcting for sample drift during the scan, or to salvage an image that is degraded due to late-stage beam-induced damage in dose-sensitive samples.
 %
 Particularly for these dose-sensitive samples, optimal sampling is desired which makes the use of hexagonal grids attractive.
 %
-The methods we have described in this note provide practical methods for achieving interlaced hexagonal scan patterns.
+We have described practical methods for acquiring interlaced hexagonal scan patterns.
 %
 We have specifically designed these methods for use in controllers that are only
 capable of performing rectilinear scans.
 %
 The basic method is readily implemented and easy to handle, as it provides a square (two-grid) hexagonal pattern which is easy to process.
 %
-The rotating pattern (and its trimmed variant) is ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
+The rotating pattern and its trimmed variant are ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
 %
 
 
