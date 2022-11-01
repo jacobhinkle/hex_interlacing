@@ -340,13 +340,21 @@ The rotational hex interlacing method shown above results in a sampling density 
 %
 In some cases, only the fully sampled interior region is of interest, in which case any samples outside that region are wasteful.
 %
-In such situations, we simply trim the rectangular grids from 8x8 to 8x6 in Phase 3 in order to make them more square, while still completely covering the fully sampled interior.
+In such situations, we simply trim the rectangular grids from 8x8 to 8x6 in
+Phase 3 in order to make them more square, while still completely covering the
+fully sampled interior.
 %
-Further phases require no modification as they merely double the grid.
+We continue trimming of a single row from each end of the pattern after
+every second phase (i.e. on all subsequent odd phases).
 %
-The result is a method we call the trimmed rotational hex interlacing method and is shown in \reffig{trimmedrotatingphases}.
+It is easy to check that this results in a pattern with
+$\frac{1}{3}\left(4^{\lfloor n/2\rfloor + 1} + 2\right)$ columns and $2^{2n -
+1}$ rows after each odd phase $n$ ($n\ge 3$), implying that as $n\to\infty$ the
+ratio of columns to rows converges to $\frac{2}{3}$.
 %
-Using trimming, the interior sample density which constitutes only one third the overall area and half the total sample density
+The result is a method we call the trimmed rotational hex interlacing method
+(TRHI) and is shown in \reffig{trimmedrotatingphases}.
+
 
 \begin{figure}[ht]
 \centering
@@ -364,12 +372,14 @@ The interior hexagon is still fully sampled while sparing 50\% of samples in the
 \end{figure}
 
 
+Since the number of columns in each rectangular subscan converges to two thirds
+the number of rows, the effect is to reduce the extent of each rectangular
+region to asymptotically coincide exactly with the fully-sampled interior
+region, as shown in the right-hand panel of \reffig{hexdensity}.
 %
-With trimming, the sampling density in the interior is unchanged but undersampled regions in the periphery are sampled even less.
+In TRHI the interior sample density which constitutes only one third the area of the circumscribed hexagon contains half the total samples as the sampling density in the interior is unchanged but undersampled regions in the periphery are sampled even less.
 %
 This results in a concentration of points in the hexagonal-shaped interior region.
-%
-%NOTE: Finish out this section showing that interior after trimming is same \# points as best-case inscribed hex for a rectangular FOV and basic interlacing.
 %
 By comparison, the basic interlacing method, while simple to implement, results in a less uniform angular distribution of points than the trimmed rotational method~(see \reffig{angdens}).
 
