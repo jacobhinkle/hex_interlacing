@@ -13,6 +13,15 @@
         numpy
         ipympl
       ];
+      latexDeps = with pkgs; [
+        (
+          texlive.combine {
+            inherit (texlive)
+            scheme-medium
+            preprint  # for authblk.sty
+            latexmk; }
+        )
+      ];
     in
       rec {
         packages = flake-utils.lib.flattenTree rec {
@@ -49,15 +58,27 @@
             name = "hex-paper-latex.zip";
             meta.description = "Zip up latex source in format suitable for submission.";
             src = ./latex;
-            buildInputs = [
-              hex-paper-latex
-              pkgs.zip
-            ];
+            buildInputs = [ hex-paper-latex pkgs.zip ] ++ latexDeps;
             buildPhase = ''
-              outfile=$(readlink -f ./hex-paper-latex.zip)
+              # build in build dir, just to generate a .bbl file, then copy to
+              # zip with original source
+              mkdir build zip
               (
-                cd ${hex-paper-latex}
-                zip -r $outfile *
+                cd build
+                for i in ${hex-paper-latex}/*
+                do
+                  ln -s $i .
+                done
+                latexmk -pdf hex.tex
+                cp hex.bbl ../zip
+              )
+              (
+                cd zip
+                for i in ${hex-paper-latex}/*
+                do
+                  ln -s $i .
+                done
+                zip -r ../hex-paper-latex.zip *
               )
               '';
             installPhase = ''
@@ -68,12 +89,7 @@
             name = "hex.pdf";
             meta.description = "Compile latex with generated figures.";
             src = self;
-            buildInputs = with pkgs; [
-              hex-paper-latex
-              (texlive.combine { inherit (texlive) scheme-medium
-              preprint  # for authblk.sty
-              latexmk; })
-            ];
+            buildInputs = [ hex-paper-latex ] ++ latexDeps;
             buildPhase = ''
               # create writeable latex dir. Link in all source files
               mkdir build
