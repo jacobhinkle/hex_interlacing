@@ -27,5 +27,5 @@ run something like:
 zathura $(nix build --no-link --print-out-paths github:jacobhinkle/hex_interlacing#hexpdf)
 ```
 
-If you would like to interact with the notebook, you can acquire a dev shell
-using `nix develop` or run `nix run .#jupyter`.
+If you would like to interact with the notebook, clone this repository then you
+can acquire a dev shell using `nix develop` then run `jupyter notebook`.
