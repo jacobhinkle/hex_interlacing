@@ -31,10 +31,18 @@
             meta.description = "Collect generated figures and latex file.";
             src = ./latex;
             buildInputs = [ hex-paper-figures ];
+            # buildPhase creates a flat directory structure, adjusting paths in
+            # hex.tex to point to current directory
+            buildPhase = ''
+              sed -i 's/..\/figs\///g' ./hex.tex
+              '';
             installPhase = ''
-              mkdir -p $out/latex
-              cp ./hex.tex ./hex.bib $out/latex
-              ln -s ${hex-paper-figures} $out/figs
+              mkdir -p $out
+              cp ./hex.tex ./hex.bib $out
+              for i in ${hex-paper-figures}/*
+              do
+                ln -s $i $out/
+              done
               '';
           };
           hex-paper-latex-zip = pkgs.stdenv.mkDerivation {
@@ -46,9 +54,11 @@
               pkgs.zip
             ];
             buildPhase = ''
-              tmpout=hex-paper-latex  # directory name once unzipped
-              ln -s ${hex-paper-latex} ./$tmpout
-              zip -r hex-paper-latex.zip $tmpout
+              outfile=$(readlink -f ./hex-paper-latex.zip)
+              (
+                cd ${hex-paper-latex}
+                zip -r $outfile *
+              )
               '';
             installPhase = ''
               cp hex-paper-latex.zip $out
@@ -66,18 +76,17 @@
             ];
             buildPhase = ''
               # create writeable latex dir. Link in all source files
-              mkdir -p build/latex
-              ln -s ${hex-paper-latex}/figs build/figs
+              mkdir build
               (  # build in subshell
-                cd build/latex
-                for i in ${hex-paper-latex}/latex/*
+                cd build
+                for i in ${hex-paper-latex}/*
                 do
-                  ln -s $i
+                  ln -s $i .
                 done
                 latexmk -pdf hex.tex
               )
               '';
-            installPhase = "cp build/latex/hex.pdf $out";
+            installPhase = "cp build/hex.pdf $out";
           };
         };
         defaultPackage = packages.hexpdf;
