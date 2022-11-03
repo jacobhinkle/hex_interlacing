@@ -105,9 +105,9 @@
               '';
             installPhase = "cp build/hex.pdf $out";
           };
+          default = pdf;
         };
-        defaultPackage = packages.pdf;
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = jupyterEnvInputs ++ latexDeps;
         };
       }
