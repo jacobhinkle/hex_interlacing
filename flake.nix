@@ -107,6 +107,9 @@
           };
         };
         defaultPackage = packages.pdf;
+        devShell = pkgs.mkShell {
+          buildInputs = jupyterEnvInputs ++ latexDeps;
+        };
       }
     );
 }
