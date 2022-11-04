@@ -7,3 +7,6 @@
 hex.pdf
 *.swp
 *.out
+hexNotes.bib
+hex.synctex.gz
+.DS_Store
