@@ -28,7 +28,7 @@
 \makeatother
 
 \begin{document}
-	\title{Hexagonal Scan Interlacing}
+	\title{Interlaced scan patterns based on progressive hexagonal grids}
 	\author{Debangshu Mukherjee\ \orcidlink{0000-0003-0437-9807}}
 	\email{mukherjeed@ornl.gov}
 	\affiliation{Computational Sciences \& Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
@@ -93,9 +93,6 @@
     %
     Our methods are simple, scale to any required depth or resolution, and can be
     implemented with a series of simple rectilinear sampling grids.
-    %
-    Code for generating this manuscript and all figures included is available at
-    \url{https://github.com/jacobhinkle/hex_interlacing}.
 
     %\subsection{Related Work}
     %\label{sec:wavelets}
@@ -469,31 +466,9 @@
 
     \begin{figure*}
         \centering
-        % trim=left bottom right top
-            \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[trim=100 40 90 40,
-                    clip,width=\textwidth]{../figs/square_montage.pdf}
-                \caption{Square montage (25\% overlap)}
-                \label{fig:square montage}
-            \end{subfigure}
-            \hfill
-            \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[trim=95 40 85 40,
-                    clip,width=\textwidth]{../figs/hex_montage_tight_untrimmed.pdf}
-                \caption{Tight hex montage}
-                \label{fig:tight hex montage}
-            \end{subfigure}
-            \hfill
-            \begin{subfigure}[b]{0.3\textwidth}
-                \centering
-                \includegraphics[trim=95 40 85 40,
-                    clip,width=\textwidth]{../figs/hex_montage_loose_untrimmed.pdf}
-                \caption{Loose hex montage}
-                \label{fig:loose hex montage}
-            \end{subfigure}
-        \caption{Montaging schemes for square and hexagonal scan patterns.
+        \includegraphics[%trim=130 100 100 65,
+            clip,width=\textwidth]{../figs/combined_montage.pdf}
+        \caption{\label{fig:montage}\textbf{Montaging schemes for square and hexagonal scan patterns.}
         %
         Individual tiles are shown in red, while other tiles are shown in gray.
         %
@@ -509,7 +484,6 @@
         Using TRHI, these triangular regions overlap perfectly resulting in uniform
         expected sampling density across the grid, while maintaining overlap required for
         stitching.}
-        \label{fig:montage} 
     \end{figure*}
 
     Basic hex interlacing results in a square or rectangular image, so it naturally
@@ -571,7 +545,6 @@
     with more overlap and an average oversampling of $1.5\times$ (equivalent rectilinear
     overlap: 18.4\%).
 
-
     \section{\label{sec:conclusion}Conclusion}
 
     Interlaced scan patterns provide a potential for whole-FOV information to be acquired very early in the scan.
@@ -590,7 +563,6 @@
     The rotating pattern and its trimmed variant are ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
     %
 
-
     Rotational interlacing is achieved by rotation of the fast scan axis among 6
     equally spaced directions.
     %
@@ -602,11 +574,18 @@
     Rotation of the fast axis is also possible in rectilinear scanning, but only 4
     axes will be available in that case instead of six.
 
-
     The optimal sampling efficiency of hexagonal grids, along with the potential for
     montaging without increasing the dose (using TRHI and a loose grid), present an
     attractive opportunity for development of modality-specific methods to enable
     large-FOV imaging of dose-sensitive samples.
+
+    \section*{Code and Data Availability}
+
+    The codes for generating this manuscript and all figures included are available at \href{https://github.com/jacobhinkle/hex_interlacing}{the linked GitHub repository}. 
+
+    \section*{\label{sec:acknowledgement}Acknowledgements}
+
+    This research is sponsored by the INTERSECT Initiative as part of the Laboratory Directed Research and Development Program of Oak Ridge National Laboratory, managed by UT-Battelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. 
 
     \bibliography{hex}
 
