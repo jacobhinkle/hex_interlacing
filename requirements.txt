@@ -2,3 +2,4 @@ ipympl
 jupyter
 matplotlib
 numpy
+py-open-fonts
