@@ -4,7 +4,6 @@
 *.fdb_latexmk
 *.fls
 *.log
-hex.pdf
 *.swp
 *.out
 hexNotes.bib
