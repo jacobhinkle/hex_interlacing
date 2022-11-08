@@ -54,91 +54,79 @@
     \maketitle
 	
 	\section{\label{sec:intro}Introduction}
-    \blfootnote{\textsf{This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (\href{http://energy.gov/downloads/doe-public-access-plan}{http://energy.gov/downloads/doe-public-access-plan})}}
+    \blfootnote{\textsf{This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. 
+    %
+    The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. 
+    %
+    The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (\href{http://energy.gov/downloads/doe-public-access-plan}{http://energy.gov/downloads/doe-public-access-plan})}}
     
-    Typically, digital images are acquired using a charge-coupled device (CCD) which provides an image supported on a rectilinear grid of pixels.
+    The standard technique for obtaining digital images is through the interaction of imaging photons or electrons with a rectilinear grid of pixels that convert the impinged photons/electrons into electrical signals.
+    %
+    Several detection schemes exist, such as charge-coupled devices (CCD), or complementary metal oxide semiconductor (CMOS) detectors\cite{electron_detectors_review, ccd_cmos_review}.
+    %
+    In this detection scheme, the region of interest to imaged is illuminated by the electron/photon beam, and the exit wave is captured by the detector subsequently.
+    %
+    Such a system has wide applicability from optical microscopes with visible light photons, to X-Ray microscopes with high energy photons, and even transmission electron microscopes.
     %
     However, in some devices a subject is instead probed in a predefined programmable pattern to obtain a grid of point measurements.
     %
     This is the case in scanning probe microscopy (SPM), scanning transmission electron microscopy (STEM), confocal laser scanning microscopy, and others.
     %
     %In these scanning modalities, sample efficiency and other practical factors are often of the utmost importance.
-    Particularly when imaging sensitive subjects using invasive modalities such as
-    these, sampling efficiency is critical to obtaining useful images before probe-induced damage ruins the sample.
+    Particularly when imaging sensitive subjects using invasive modalities such as these, sampling efficiency is critical to obtaining useful images before probe-induced damage ruins the sample.
+    %
 
 
     To date, the predominant approach used in most scanning modalities is to use a square pixel grid scan pattern wherein each pixel has four equidistant nearest neighbors.
     %
     However, it has long been known that hexagonal grid patterns offer optimal sampling for circularly band-limited signals in the sense of minimizing aliasing for a given number of sample points\cite{petersen1962}.
     %
-    The availability of efficient hexagonal image processing methods makes the use
-    of hexagonal grids in image processing more practical now than in the past\cite{birdsong2016hexfft,middleton2006hexagonal}.
+    The availability of efficient hexagonal image processing methods makes the use of hexagonal grids in image processing more practical now than in the past\cite{hex_fft, middleton2006hexagonal}.
     %
-    There has been some study of hexagonal scan patterns in scanning optical
-    microscopy\cite{heintzmann2007}, while in STEM some attention has been given to alternative scan patterns including spiral patterns\cite{sang2016dynamic}, while non-rectilinear scan patterns have been tried for SPM too\cite{ziegler2013improved}. 
+    There has been some study of hexagonal scan patterns in scanning optical microscopy\cite{heintzmann2007}, while in STEM some attention has been given to alternative scan patterns including spiral patterns\cite{spiral_scans}, while non-rectilinear scan patterns have been tried for SPM too\cite{non_gridded_spm}. 
     %
     But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment. 
 
 
     In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which process multiple images of increasing resolution each with a full field of view; such methods are referred to as interlacing methods.
     %
-    Previous approaches to interlacing were designed to enable interpolation of a
-    high-resolution image while the image is transmitted over a bandwidth-limited connection.
+    Previous approaches to interlacing were designed to enable interpolation of a high-resolution image while the image is transmitted over a bandwidth-limited connection.
     %
-    We notice that full-FOV multi-pass scanning via interlacing offers a number of
-    advantages in scientific imaging despites its apparent added complexity: for
-    example it enables iterative reconstruction to begin while data is still being
-    acquired, and successive passes offer information that could be used to correct
-    for sample and instrument drift.
+    We notice that full-FOV multi-pass scanning via interlacing offers a number of advantages in scientific imaging despites its apparent added complexity: for example it enables iterative reconstruction to begin while data is still being acquired, and successive passes offer information that could be used to correct for sample and instrument drift.
     %
     In the present work we extend conventional image interlacing to hexagonal grids and discuss their characteristics in the context of optimal sampling for scanning imaging modalities.
     %
-    Our methods are simple, scale to any required depth or resolution, and can be
-    implemented with a series of simple rectilinear sampling grids.
+    Our methods are simple, scale to any required depth or resolution, and can be implemented with a series of simple rectilinear sampling grids.
 
-    %\subsection{Related Work}
-    %\label{sec:wavelets}
+    \section{\label{sec:rect}Rectilinear Interlacing}
 
-    %Wavelets have hierarchical property and apply to hexagonal grids~ \citep{jeevan2014compression}
-    %, but doesn't work for point sampling methods
-    %like in scanning electron microscopy modalities.
-
-    \section{Rectilinear Interlacing}
-    \label{sec:rect}
-
-    The two most popular interlacing methods are scanline interlacing as used in GIF and TGA file formats, and Adam7 interlacing as part of the early portable network graphics (PNG) 2D image file format\cite{rfc2083}.
+    The two most popular interlacing methods are scanline interlacing as used in GIF and TGA file formats, and Adam7 interlacing as part of the early portable network graphics (PNG) 2D image file format\cite{png}.
     %
-    In scanline interlacing, full-resolution scanlines (rows) are acquired at each
-    phase, with the number of rows doubling until sufficient vertical resolution is
-    acquired (\autoref{fig:scanlinephases}).
+    In scanline interlacing, full-resolution scanlines (rows) are acquired at each phase, with the number of rows doubling until sufficient vertical resolution is acquired (\autoref{fig:scanlinephases}).
     %
-    This is similar to standards in over-the-air transmission of digital video, such
-    as progressive segmented frame and interlaced 1080i HDTV following the ITU-R
-    BT.709-6, in which odd and even scanlines are transmitted separately to enable higher
-    framerates using interpolation of missing scanlines.
+    This is similar to standards in over-the-air transmission of digital video, such as progressive segmented frame and interlaced 1080i HDTV following the ITU-R BT.709-6\cite{hdtv}, in which odd and even scanlines are transmitted separately to enable higher framerates using interpolation of missing scanlines.
 
     \begin{figure*}
         \centering
         \includegraphics[
             %trim=70 50 70 25,
             clip,width=.9\textwidth]{../figs/scanline_phases.pdf}
-        \caption{\label{fig:scanlinephases}
-            Scanline interlacing method for rectilinear grids.
-            %
-            Each circle represents a sample point (acquired pixel).
-            %
-            Starting from an initial grid (Phase 1), each subsequent phase consists of
-            doubling the rows of the grid by acquiring a new subscan (blue).
-            }
+            \caption{
+                \label{fig:scanlinephases}
+                \textbf{Scanline interlacing method for rectilinear grids.}
+                %
+                Each circle represents a sample point (acquired pixel).
+                %
+                Starting from an initial grid (Phase 1), each subsequent phase consists of
+                doubling the rows of the grid by acquiring a new subscan (blue).
+                }
     \end{figure*}
 
-    The Adam7 algorithm extends scanline interlacing by alternatively upscaling in
-    each dimension, as is shown in \autoref{fig:adam7phases}.
+    The Adam7 algorithm extends scanline interlacing by alternatively upscaling in each dimension, as is shown in \autoref{fig:adam7phases}.
     %
     After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
     %
-    We refer to two of these consecutive passes as a ``phase'', so that Adam7
-    consists of a base phase (initial low-resolution image) and three upscaling phases.
+    We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial low-resolution image) and three upscaling phases.
     %
     Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
 
@@ -148,10 +136,11 @@
         \includegraphics[
             %trim=70 50 70 25,
             clip,width=.9\textwidth]{../figs/adam7_phases.pdf}
-        \caption{\label{fig:adam7phases}
-        The Adam7 interlacing method for rectilinear grids.
-        %
-            Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
+            \caption{
+                \label{fig:adam7phases}
+                \textbf{The Adam7 interlacing method for rectilinear grids.}
+                %
+                Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
             }
     \end{figure*}
 
@@ -168,11 +157,9 @@
     The second method requires shifting, doubling, and rotating grids.
 
 
-    \subsection{Basic Hex Interlacing}
-    \label{double-grid-interlacing}
+    \subsection{\label{ssec:double-grid-interlacing}Basic Hex Interlacing}
 
-    A hexagonal grid can be constructed from two identical rectilinear grids
-    whose pixel spacings are a multiple of $[1, \sqrt{3}]^T$ and which are offset from one another by half that spacing (see Fig.~\ref{fig:basicphases}, Phase 1).
+    A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacings are a multiple of $\mathbf{\left[1, \sqrt{3}\right]^T}$ and which are offset from one another by half that spacing (see Fig.~\ref{fig:basicphases}, Phase 1).
 
     \begin{figure*}
         \centering
@@ -185,21 +172,21 @@
         %
         In each pass, previously sampled points are shown in gray.
         %
-        Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+        Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
         }
     \end{figure*}
 
-    To refine a coarse hex grid with spacing $s$, we duplicate the grid reflected horizontally and shifted vertically by $\frac{\sqrt{3}}{2} s$ using two rectilinear grids.
+    To refine a coarse hex grid with spacing $\mathbf{s}$, we duplicate the grid reflected horizontally and shifted vertically by $\mathbf{\frac{\sqrt{3}}{2} s}$ using two rectilinear grids.
     %
-    The result is a rectilinear grid whose pixel spacing is $[s/2, \sqrt{3}]^T$.
+    The result is a rectilinear grid whose pixel spacing is $\mathbf{\left[\frac{s}{2}, \sqrt{3}\right]^T}$.
     %
-    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $[s/2, \sqrt{3}/2]^T$.
+    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $\mathbf{\left[\frac{s}{2}, \frac{\sqrt{3}}{2}\right]^T}$.
     %
     %These steps are shown in detail in Algorithm~\ref{alg:basic}
     %
     We refer to one of these upscaling operations as a ``phase'' consisting of 3 rectilinear grids.
     %
-    Additional phases are implemented identically, replacing $s$ with $s/2$.
+    Additional phases are implemented identically, replacing $\mathbf{s}$ with $\mathbf{\frac{s}{2}}$.
 
     %\begin{algorithm}
     %\caption{Basic hex interlacing algorithm.}\label{alg:basic}
@@ -224,9 +211,9 @@
     %
     However, instead of flipping, the duplicated hex grid could alternatively be offset along one of the three axes of symmetry in the hexagonal grid.
     %
-    Using the lateral direction is nearly equivalent to flipping, but duplicating either of the other directions results in a rectilinear grid which is rotated by $\pm 120$ degrees.
+    Using the lateral direction is nearly equivalent to flipping, but duplicating either of the other directions results in a rectilinear grid which is rotated by $\mathrm{\pm 120^{\circ}}$.
     %
-    In this method, which we call the ``rotational hex interlacing method,'' we perform this duplication then fill in the missing rectilinear grid which is again rotated by $\mp 120$ degrees.
+    In this method, which we call the ``rotational hex interlacing method,'' we perform this duplication then fill in the missing rectilinear grid which is again rotated by $\mathrm{\mp 120^{\circ}}$.
     %
     The result is a method which can start from a single point or small grid and produce a hexagonally-shaped hex grid, placing samples more in a more uniform angular distribution about the center.
 
@@ -242,7 +229,7 @@
         %
         In each pass, previously sampled points are shown in gray.
         %
-        Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+        Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
         }
     \end{figure*}
 
@@ -279,54 +266,30 @@
     In the periphery, due to incomplete overlap, we must instead approximate the density.
 
 
-    In order to analyze sampling density of rotational hex interlacing methods, we
-    consider limits of the sample point sets as we perform an ever-increasing number
-    of interlacing phases.
+    In order to analyze sampling density of rotational hex interlacing methods, we consider limits of the sample point sets as we perform an ever-increasing number of interlacing phases.
     %
-    Each phase resembles the previous phase rotated by 120 degrees, resulting in
-    three subsequences that each independently converge to the same (but rotated)
-    normalized sampling density.
+    Each phase resembles the previous phase rotated by 120 degrees, resulting in three subsequences that each independently converge to the same (but rotated) normalized sampling density.
     %
-    More rigorously, denoting by $\mu_p$ the discrete probability measure supported
-    at all points in the phases up to and including phase $p$ and placing uniform
-    mass at each point, the subsequences $\mu_{3k+i}$
-    converge in measure to some continuous measures $\mu_1,\mu_2,\mu_3$ as
-    $k\to\infty$ for $i=1,2,3$.
+    More rigorously, denoting by $\mathbf{\mu_p}$ the discrete probability measure supported at all points in the phases up to and including phase $\mathbf{p}$ and placing uniform mass at each point, the subsequences $\mathbf{\mu_{3k+i}}$ converge in measure to some continuous measures $\mathbf{\mu_1,\ \mu_2,\ \mu_3}$ as $\mathbf{k\to\infty}$ for $\mathbf{i=1,2,3}$.
     %
-    To see that the limit is a continuous measure, note that rotational hex
-    interlacing consists of repeated applications of rectangular grids, and that
-    each of the three subsequences contains the same repeated grids with
-    ever-increasing numbers of points, resulting in three limiting distributions
-    which are themselves superpositions of three indicator functions over the
-    rotated rectangles.
-    %
-    Furthermore, these limiting measures are simple 120 degree rotations of one
-    another, so we only examine one in detail.
 
 
-    To see that each subsequence converges, consider a sequence consisting of a
-    fixed pattern for one phase (i.e. no 120 degree rotation), but instead applying
-    the inverse 120 degree rotation to all previous points.
+    To see that the limit is a continuous measure, note that rotational hex interlacing consists of repeated applications of rectangular grids, and that each of the three subsequences contains the same repeated grids with ever-increasing numbers of points, resulting in three limiting distributions which are themselves superpositions of three indicator functions over the rotated rectangles.
     %
-    Since we cannot change the locations of previously-acquired points, this
-    situation is non-physical, but is useful for analyzing the limiting behavior,
-    as it results in a situation where the same update is applied repeatedly.
+    Furthermore, these limiting measures are simple $\mathrm{120^{\circ}}$ rotations of one another, so we only examine one in detail.
+
+
+    To see that each subsequence converges, consider a sequence consisting of a fixed pattern for one phase (i.e. no $\mathrm{120^{\circ}}$ rotation), but instead applying the inverse $\mathrm{120^{\circ}}$ rotation to all previous points.
     %
-    Since a growing number of points are added during each phase (exactly double),
-    the limiting density must be equal to the average of itself and a version of
-    itself inversely rotated by 120 degrees.
+    Since we cannot change the locations of previously-acquired points, this situation is non-physical, but is useful for analyzing the limiting behavior, as it results in a situation where the same update is applied repeatedly.
     %
-    As each phase consists of three rectangles oriented at 120 degrees to one
-    another, it is easy to see that assigning values of 1, 2, and 4 to these
-    rectangles satisfies this condition (see the left-hand panel of
-    \autoref{fig:hexdensity}).
+    Since a growing number of points are added during each phase (exactly double), the limiting density must be equal to the average of itself and a version of itself inversely rotated by $\mathrm{120^{\circ}}$.
     %
-    Note that in the figure, integer values are shown instead of normalized point
-    densities, in order to more clearly display the relative sampling densities in
-    each region.
+    As each phase consists of three rectangles oriented at $\mathrm{120^{\circ}}$ to one another, it is easy to see that assigning values of 1, 2, and 4 to these rectangles satisfies this condition (see the left-hand panel of \autoref{fig:hexdensity}).
     %
-    The darkest central region occupies only one third of total sampled area, but
-    contains half of all sample points.
+    Note that in the figure, integer values are shown instead of normalized point densities, in order to more clearly display the relative sampling densities in each region.
+    %
+    The darkest central region occupies only one third of total sampled area, but contains half of all sample points.
     %
 
     \subsection{\label{ssec:trimmed}Trimmed Rotational Hex Interlacing}
@@ -335,20 +298,15 @@
     %
     In some cases, only the fully sampled interior region is of interest, in which case any samples outside that region are wasteful.
     %
-    In such situations, we simply trim the rectangular grids from 8x8 to 8x6 in
-    Phase 3 in order to make them more square, while still completely covering the
-    fully sampled interior.
+    In such situations, we simply trim the rectangular grids from $\mathrm{8\times 8}$ to $\mathrm{8\times 6}$ in
+    Phase 3 in order to make them more square, while still completely covering the fully sampled interior.
     %
-    We continue trimming off a single row from each end of the pattern after
-    every second phase (i.e. on all subsequent odd phases).
+    We continue trimming off a single row from each end of the pattern after every second phase (i.e. on all subsequent odd phases).
     %
-    It is easy to check that this results in a pattern with
-    $\frac{1}{3}\left(4^{\lfloor n/2\rfloor + 1} + 2\right)$ columns and $2^{2n -
-    1}$ rows after each odd phase $n$ ($n\ge 3$), implying that as $n\to\infty$ the
-    ratio of columns to rows converges to $\frac{2}{3}$.
+    It is easy to check that this results in a pattern with $\mathbf{\frac{1}{3}\left(4^{\lfloor n/2\rfloor + 1} + 2\right)}$ columns and $\mathbf{2^{2n - 1}}$ rows after each odd phase $\mathbf{n \left(n\ge 3\right)}$, implying that as $\mathbf{n\to\infty}$ the
+    ratio of columns to rows converges to $\mathrm{\frac{2}{3}}$.
     %
-    The result is a method we call the trimmed rotational hex interlacing method
-    (TRHI) and is shown in \autoref{fig:trimmedrotatingphases}.
+    The result is a method we call the trimmed rotational hex interlacing method (TRHI) and is shown in \autoref{fig:trimmedrotatingphases}.
 
 
     \begin{figure*}
@@ -367,10 +325,7 @@
     \end{figure*}
 
 
-    Since the number of columns in each rectangular subscan converges to two thirds
-    the number of rows, the effect is to reduce the extent of each rectangular
-    region to asymptotically coincide exactly with the fully-sampled interior
-    region, as shown in the right-hand panel of \autoref{fig:hexdensity}.
+    Since the number of columns in each rectangular subscan converges to two thirds the number of rows, the effect is to reduce the extent of each rectangular region to asymptotically coincide exactly with the fully-sampled interior region, as shown in the right-hand panel of \autoref{fig:hexdensity}.
     %
     In TRHI the interior sample density which constitutes only one third the area of the circumscribed hexagon contains half the total samples as the sampling density in the interior is unchanged but undersampled regions in the periphery are sampled even less.
     %
@@ -405,7 +360,7 @@
             clip,width=.7\textwidth]{../figs/angular_density.pdf}
         \caption{
         \label{fig:angdens} 
-            Asymptotic angular distribution of sample points using each of the proposed methods.
+            \textbf{Asymptotic angular distribution of sample points using each of the proposed methods.}
             %
             %Each method was normalized to have equal area (same total number of sample points).
         }
@@ -422,9 +377,9 @@
     %
     In order to enable further adaptivity, we propose to interlace the final rectilinear subscan as well by applying Adam7 interlacing to generate the final subscan.
     %
-    This results in a new final subscan containing $\frac{1}{4}$ the total number of points, which itself could be interlaced, and so on recursively.
+    This results in a new final subscan containing $\mathrm{\frac{1}{4}}$ the total number of points, which itself could be interlaced, and so on recursively.
     %
-    We refer to this approach of using $m$ recursive Adam7 passes in the final subscan with the suffix -$m$Adam7, e.g. TRHI6-2Adam7.
+    We refer to this approach of using $\mathbf{m}$ recursive Adam7 passes in the final subscan with the suffix -$\mathit{m}$Adam7, e.g. TRHI6-2Adam7.
     %
     The effect of this further interlacing is shown in \autoref{fig:subscanlengths}, showing finer granularity in the second half of the scan using recursive interlacing.
 
@@ -449,17 +404,12 @@
     \subsection{Montaging Considerations}
     \label{sec:montaging}
 
-    It is common practice in microscopy to acquire images in a
-    ``montage'' containing multiple scan locations, then stitch them together to
+    It is common practice in microscopy to acquire images in a ``montage'' containing multiple scan locations, then stitch them together to
     effectively image a larger FOV than is possible with a single scan.
     %
-    The montage is typically planned with 10-20\% overlap between neighboring scans,
-    in order to facilitate the image registration methods required for stitching.
+    The montage is typically planned with 10-20\% overlap between neighboring scans, in order to facilitate the image registration methods required for stitching.
     %
-    When the individual scans in a montage (called tiles) are rectilinear, it is
-    natural to also use a rectilinear montaging grid, resulting in $2\times$ oversampling
-    along linear edges, and $4\times$ oversampling in each corner of interior images in
-    the montage (see \autoref{fig:montage}).
+    When the individual scans in a montage (called tiles) are rectilinear, it is natural to also use a rectilinear montaging grid, resulting in $\mathrm{2\times}$ oversampling along linear edges, and $\mathrm{4\times}$ oversampling in each corner of interior images in the montage (see \autoref{fig:montage}).
     %
     % NOTE: below is one way to avoid this even for rect tilings...
     %Such oversampling might be avoided by splitting each rectangular tile into four
@@ -470,82 +420,50 @@
         \centering
         \includegraphics[%trim=130 100 100 65,
             clip,width=\textwidth]{../figs/combined_montage.pdf}
-        \caption{\label{fig:montage}\textbf{Montaging schemes for square and hexagonal scan patterns.}
-        %
-        Individual tiles are shown in red, while other tiles are shown in gray.
-        %
-        In each hexagonal pattern, the envelope of partially sampled locations for
-        each tile is shown in a lighter shade, while the interior darker hexagon
-        indicates the region of each tile that is fully sampled.
-        %
-        In the tight hex montage scheme, neighboring interior regions share an edge
-        with each of their six neighbors, while in the loose scheme they instead
-        share only a vertex, leaving a partially sampled triangular gap between each
-        set of three neighboring tiles.
-        %
-        Using TRHI, these triangular regions overlap perfectly resulting in uniform
-        expected sampling density across the grid, while maintaining overlap required for
-        stitching.}
+        \caption{
+            \label{fig:montage}\textbf{Montaging schemes for square and hexagonal scan patterns.}
+            %
+            Individual tiles are shown in red, while other tiles are shown in gray.
+            %
+            In each hexagonal pattern, the envelope of partially sampled locations for each tile is shown in a lighter shade, while the interior darker hexagon indicates the region of each tile that is fully sampled.
+            %
+            In the tight hex montage scheme, neighboring interior regions share an edge with each of their six neighbors, while in the loose scheme they instead share only a vertex, leaving a partially sampled triangular gap between each set of three neighboring tiles.
+            %
+            Using TRHI, these triangular regions overlap perfectly resulting in uniform expected sampling density across the grid, while maintaining overlap required for stitching.
+            }
     \end{figure*}
 
-    Basic hex interlacing results in a square or rectangular image, so it naturally
-    fits into existing montaging schemes using rectilinear supergrids.
+    Basic hex interlacing results in a square or rectangular image, so it naturally fits into existing montaging schemes using rectilinear supergrids.
     %
-    However, rotational hex interlacing (RHI) and its trimmed variant (TRHI) result in
-    hexagonal scan patterns with variable point densities within each tile, as shown
-    in \autoref{fig:hexdensity}.
+    However, rotational hex interlacing (RHI) and its trimmed variant (TRHI) result in hexagonal scan patterns with variable point densities within each tile, as shown in \autoref{fig:hexdensity}.
     %
-    This suggests using a hexagonal montaging grid that leverages this
-    non-uniformity to enable sufficient overlap for stitching without introducing
-    excessive and potentially wasteful oversampling.
+    This suggests using a hexagonal montaging grid that leverages this non-uniformity to enable sufficient overlap for stitching without introducing excessive and potentially wasteful oversampling.
     %
-    The impact on image registration due to differing sampling densities for various
-    montaging strategies depends on the image modality and registration method used;
-    here we only analyze the overall sampling density of hexagonal interlacing grids
-    when forming a large montage.
+    The impact on image registration due to differing sampling densities for various montaging strategies depends on the image modality and registration method used; here we only analyze the overall sampling density of hexagonal interlacing grids when forming a large montage.
 
 
-    A hexagonal supergrid can be produced by aligning the centers of each small
-    hexagonally-shaped tile relative to the orientation of its fully-sampled
-    interior hexagon.
+    A hexagonal supergrid can be produced by aligning the centers of each small hexagonally-shaped tile relative to the orientation of its fully-sampled interior hexagon.
     %
     Two schemes in particular lead to rotationally symmetric montaging grids (see \autoref{fig:montage}).
     %
-    We refer to the scheme in which fully-sampled hexagonal interiors are aligned
-    without gaps along their sides as a ``tight'' montage, while we refer to
-    aligning them along their vertices introducing small triangular gaps as a
-    ``loose'' montage.
+    We refer to the scheme in which fully-sampled hexagonal interiors are aligned without gaps along their sides as a ``tight'' montage, while we refer to aligning them along their vertices introducing small triangular gaps as a ``loose'' montage.
     %
-    Notice that in a loose montage, due to the partial sampling outside of the
-    interior hexagons, some information exists that can be used for alignment, even
-    though no fully-sampled regions are overlapped.
+    Notice that in a loose montage, due to the partial sampling outside of the interior hexagons, some information exists that can be used for alignment, even though no fully-sampled regions are overlapped.
 
 
-
-    For reference, the standard approach to rectilinear montaging with overlap
-    $0<\ell<1$ results in an oversampling factor of $\frac{1}{(1-\ell)^2}$, equal to
-    $1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
+    For reference, the standard approach to rectilinear montaging with overlap $\mathrm{0<\ell<1}$ results in an oversampling factor of $\mathrm{\frac{1}{(1-\ell)^2}}$, equal to $\mathrm{1.23\times}$ for 10\% and $\mathrm{1.56\times}$ for 20\% overlap ratios.
     %
-    The oversampling of RHI using a tight grid is exactly $2\times$ (equivalent rectilinear
-    overlap: 29.3\%).
+    The oversampling of RHI using a tight grid is exactly $2\times$ (equivalent rectilinear overlap: 29.3\%).
     %
-    To see this, split the sampling pattern shown in \autoref{fig:hexdensity} into three
-    rectangles and notice that each rectangle is part of a tightly packed
-    rectangular grid with $2\times$ oversampling.
+    To see this, split the sampling pattern shown in \autoref{fig:hexdensity} into three rectangles and notice that each rectangle is part of a tightly packed rectangular grid with $\mathrm{2\times}$ oversampling.
     %
-    Using trimming (TRHI) reduces oversampling from $2\times$ to 4/3 (equivalent rectlinear
-    overlap: 13.4\%), by introducing gaps into the rectangular grids.
+    Using trimming (TRHI) reduces oversampling from $2\times$ to 4/3 (equivalent rectlinear overlap: 13.4\%), by introducing gaps into the rectangular grids.
     %
-    If instead a loose montage grid is used, then using TRHI results in uniform
-    overall sampling density of $1\times$ (equivalent rectilinear overlap: 0\%), since the
-    undersampled exterior portions overlap perfectly (under zero misalignment).
+    If instead a loose montage grid is used, then using TRHI results in uniform overall sampling density of $1\times$ (equivalent rectilinear overlap: 0\%), since the undersampled exterior portions overlap perfectly (under zero misalignment).
     %
-    Unlike with a 0\% overlap rectilinear grid, the loose TRHI montage still has
-    significant overlap, with each tile overlapping all of its six neighbors.
+    Unlike with a 0\% overlap rectilinear grid, the loose TRHI montage still has significant overlap, with each tile overlapping all of its six neighbors.
     %
-    Using RHI in the loose configuration without trimming presents an alternative
-    with more overlap and an average oversampling of $1.5\times$ (equivalent rectilinear
-    overlap: 18.4\%).
+    Using RHI in the loose configuration without trimming presents an alternative with more overlap and an average oversampling of $\mathrm{1.5\times}$ (equivalent rectilinear overlap: 18.4\%).
 
     \section{\label{sec:conclusion}Conclusion}
 
@@ -565,21 +483,17 @@
     The rotating pattern and its trimmed variant are ideally suited for use in montaging schemes, due to the natural sharing of samples in the overlap regions, which avoids oversampling and introducing unnecessary dose there.
     %
 
-    Rotational interlacing is achieved by rotation of the fast scan axis among 6
-    equally spaced directions.
+    Rotational interlacing is achieved by rotation of the fast scan axis among 6 equally spaced directions.
     %
-    In the presence of sample drift, flyback delays, or lash in the scanning device,
-    this may enable detection of non-uniform distortion that would be
-    indistinguishable from image structure when using fixed fast and slow imaging
-    axes.
+    In the presence of sample drift, flyback delays, or lash in the scanning device, this may enable detection of non-uniform distortio that would be indistinguishable from image structure when using fixed fast and slow imaging axes.
     %
-    Rotation of the fast axis is also possible in rectilinear scanning, but only 4
-    axes will be available in that case instead of six.
+    Rotation of the fast axis is also possible in rectilinear scanning, but only 4 axes will be available in that case instead of six.
+    %
+    The optimal sampling efficiency of hexagonal grids, along with the potential for montaging without increasing the dose (using TRHI and a loose grid), present an attractive opportunity for development of modality-specific methods to enable large-FOV imaging of dose-sensitive samples.
 
-    The optimal sampling efficiency of hexagonal grids, along with the potential for
-    montaging without increasing the dose (using TRHI and a loose grid), present an
-    attractive opportunity for development of modality-specific methods to enable
-    large-FOV imaging of dose-sensitive samples.
+    \subsection{\label{ssec:wavelets}Related Work}
+
+    Wavelets have hierarchical property and apply to hexagonal grids \cite{hex_compression} but doesn't work for point sampling methods like in scanning electron microscopy modalities.
 
     \section*{Code and Data Availability}
 
