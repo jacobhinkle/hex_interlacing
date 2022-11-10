@@ -14,13 +14,7 @@
         ipympl
       ];
       latexDeps = with pkgs; [
-        (
-          texlive.combine {
-            inherit (texlive)
-            scheme-medium
-            preprint  # for authblk.sty
-            latexmk; }
-        )
+        texlive.combined.scheme-full
       ];
     in
       rec {
@@ -32,7 +26,7 @@
             buildInputs = jupyterEnvInputs;
             buildPhase = ''
               rm -f figs/*.pdf
-              jupyter nbconvert --inplace --execute notebooks/HexInterlacing.ipynb
+              jupyter nbconvert --ExecutePreprocessor.kernel_name=python3 --inplace --execute notebooks/HexInterlacing.ipynb
               '';
             installPhase = "mkdir -p $out && cp figs/*.pdf $out/";
           };
