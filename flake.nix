@@ -14,13 +14,7 @@
         ipympl
       ];
       latexDeps = with pkgs; [
-        (
-          texlive.combine {
-            inherit (texlive)
-            scheme-medium
-            preprint  # for authblk.sty
-            latexmk; }
-        )
+        texlive.combined.scheme-full
       ];
     in
       rec {
