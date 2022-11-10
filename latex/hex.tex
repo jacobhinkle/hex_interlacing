@@ -17,7 +17,7 @@
 			filecolor=blue, 
 			urlcolor=blue, 
 			pdftitle={Hexagonal Scan Interlacing},
-			pdfauthor={Mukherjee; Hinkle}}
+			pdfauthor={Hinkle; Mukherjee}}
 \usepackage{xfrac}
 \usepackage{url}
 \usepackage{orcidlink}
@@ -29,17 +29,17 @@
 
 \begin{document}
 	\title{Interlaced scan patterns based on progressive hexagonal grids}
-	\author{Debangshu Mukherjee\ \orcidlink{0000-0003-0437-9807}}
-	\email{mukherjeed@ornl.gov}
-	\affiliation{Computational Sciences \& Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
 	\author{Jacob D. Hinkle\ \orcidlink{0000-0002-7751-1760}}
     \email{hinklejd@ornl.gov}
+	\affiliation{Computational Sciences \& Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
+    \author{Debangshu Mukherjee\ \orcidlink{0000-0003-0437-9807}}
+	\email{mukherjeed@ornl.gov}
 	\affiliation{Computational Sciences \& Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
     
     \date{\today}
 	
 	\begin{abstract}
-		Progressive acquisition of slowly-scanned images is desirable for drift-correction and realtime visualization.
+        Progressive acquisition of slowly-scanned images is desirable for drift-correction and realtime visualization.
         %
 	    Interlacing methods are common approaches to storage and transmission of data on rectilinear grids, and here we propose using them for acquisition in scanning-mode image modalities.
 	    %
@@ -168,12 +168,13 @@
             %trim=140 65 115 10,
             clip,width=.9\textwidth]{../figs/basic_phases.pdf}
         \caption{
-        \label{fig:basicphases} Refining a hex grid through multiple interlacing passes.
-        %
-        In each pass, previously sampled points are shown in gray.
-        %
-        Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
-        }
+            \label{fig:basicphases} 
+            \textbf{Refining a hex grid through multiple interlacing passes.}
+            %
+            In each pass, previously sampled points are shown in gray.
+            %
+            Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
+            }
     \end{figure*}
 
     To refine a coarse hex grid with spacing $\mathbf{s}$, we duplicate the grid reflected horizontally and shifted vertically by $\mathbf{\frac{\sqrt{3}}{2} s}$ using two rectilinear grids.
@@ -225,12 +226,13 @@
         \includegraphics[%trim=130 100 100 65,
             clip,width=.95\textwidth]{../figs/rotating_phases.pdf}
         \caption{
-        \label{fig:rotatingphases} Refining a hex grid through multiple interlacing passes.
-        %
-        In each pass, previously sampled points are shown in gray.
-        %
-        Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
-        }
+            \label{fig:rotatingphases} 
+            \textbf{Refining a hex grid through multiple interlacing passes.}
+            %
+            In each pass, previously sampled points are shown in gray.
+            %
+            Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
+            }
     \end{figure*}
 
     %\begin{algorithm}
@@ -315,13 +317,13 @@
         \includegraphics[%trim=130 100 100 65,
             clip,width=.95\textwidth]{../figs/rotating_phases_trimmed.pdf}
         \caption{
-        \label{fig:trimmedrotatingphases} 
-        The trimmed variant of the rotational hex interlacing method.
-        %
-        The first two phases are identical to the original rotational method, but the grids are only 75\% of the original height in subsequent phases.
-        %
-        The interior hexagon is still fully sampled while sparing 50\% of samples in the periphery.
-        }
+            \label{fig:trimmedrotatingphases} 
+            \textbf{The trimmed variant of the rotational hex interlacing method.}
+            %
+            The first two phases are identical to the original rotational method, but the grids are only 75\% of the original height in subsequent phases.
+            %
+            The interior hexagon is still fully sampled while sparing 50\% of samples in the periphery.
+            }
     \end{figure*}
 
 
@@ -341,15 +343,16 @@
         \includegraphics[%trim=130 100 100 65,
             clip,width=.49\textwidth]{../figs/converged_hex_density_trimmed.pdf}
         \caption{
-        \label{fig:hexdensity}
-            Asymptotic sampling density (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
-        %
-        Each phase results in a rotation of this pattern by 120 degrees clockwise.
-        %
-        %This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
-        %
-        Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
-        }
+            \label{fig:hexdensity}
+            \textbf{Asymptotic sampling density} 
+            (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
+            %
+            Each phase results in a rotation of this pattern by 120 degrees clockwise.
+            %
+            %This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
+            %
+            Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
+            }
     \end{figure*}
 
 
@@ -366,8 +369,7 @@
         }
     \end{figure*}
 
-    \subsection{Recursive Rectilinear Interlacing}
-    \label{sec:recursive}
+    \subsection{\label{ssec:recursive}Recursive Rectilinear Interlacing}
 
     One of the key motivations for interlaced scanning is to enable full-FOV tracking and reconstruction during sample acquisition.
     %
@@ -390,19 +392,18 @@
         \includegraphics[%trim=130 100 100 65,
             clip,width=.95\textwidth]{../figs/subscan_splits_color.pdf}
         \caption{
-        \label{fig:subscanlengths} 
-        Subscan lengths as portion of overall scan time for various approaches.
-        %
-        Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan.
-        %
-            Colors match those shown in
-            Figs.~\autoref{fig:adam7phases}--\autoref{fig:trimmedrotatingphases}.
-        }
+            \label{fig:subscanlengths} 
+            \textbf{Subscan lengths as portion of overall scan time for various approaches.}
+            %
+            Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan.
+            %
+                Colors match those shown in
+                Figs.~\autoref{fig:adam7phases}--\autoref{fig:trimmedrotatingphases}.
+            }
     \end{figure*}
 
 
-    \subsection{Montaging Considerations}
-    \label{sec:montaging}
+    \subsection{\label{ssec:montaging}Montaging Considerations}
 
     It is common practice in microscopy to acquire images in a ``montage'' containing multiple scan locations, then stitch them together to
     effectively image a larger FOV than is possible with a single scan.
