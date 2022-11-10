@@ -26,7 +26,7 @@
             buildInputs = jupyterEnvInputs;
             buildPhase = ''
               rm -f figs/*.pdf
-              jupyter nbconvert --inplace --execute notebooks/HexInterlacing.ipynb
+              jupyter nbconvert --ExecutePreprocessor.kernel_name=python3 --inplace --execute notebooks/HexInterlacing.ipynb
               '';
             installPhase = "mkdir -p $out && cp figs/*.pdf $out/";
           };
