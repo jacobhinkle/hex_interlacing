@@ -22,10 +22,11 @@
           figures = pkgs.stdenv.mkDerivation {
             name = "figures";
             meta.description = "Generate all figures from jupyter notebook.";
-            src = ./.;
+            src = ./notebooks;
             buildInputs = jupyterEnvInputs;
             buildPhase = ''
-              rm -f figs/*.pdf
+              mkdir figs notebooks
+              cp HexInterlacing.ipynb notebooks
               jupyter nbconvert --ExecutePreprocessor.kernel_name=python3 --inplace --execute notebooks/HexInterlacing.ipynb
               '';
             installPhase = "mkdir -p $out && cp figs/*.pdf $out/";
@@ -83,7 +84,7 @@
           pdf = pkgs.stdenv.mkDerivation {
             name = "hex.pdf";
             meta.description = "Compile latex with generated figures.";
-            src = self;
+            src = ./.;
             buildInputs = [ latex ] ++ latexDeps;
             buildPhase = ''
               # create writeable latex dir. Link in all source files
