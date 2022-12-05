@@ -1,14 +1,15 @@
-\documentclass[aip, amsmath, amssymb, nobibnotes, nofootinbib, citeautoscript, reprint, superscriptaddress]{revtex4-2}
+\documentclass[aip, amsmath, amssymb, nobibnotes, nofootinbib, citeautoscript, reprint, superscriptaddress]{revtex4-1}
 \usepackage{graphicx}% Include figure files
 \usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
 \usepackage[version=3]{mhchem}
 \usepackage{multirow}
 \usepackage{sourcecodepro, sourcesanspro, sourceserifpro}
-%\usepackage{kpfonts}
 \usepackage[T1]{fontenc}
 \usepackage[protrusion=true,expansion=true,final]{microtype}
-\usepackage{mathastext, bm}
-
+\usepackage{mathastext}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[bookmarks=true,colorlinks]{hyperref}
 \hypersetup{linkcolor= blue, 
@@ -17,16 +18,11 @@
 			urlcolor=blue, 
 			pdftitle={Hexagonal Scan Interlacing},
 			pdfauthor={Hinkle; Mukherjee}}
-
 \usepackage{xfrac}
-
-\usepackage[labelfont={sf,bf,small},textfont={sf,small},justification=centerlast]{caption}
+\usepackage[labelfont={sf,bf,small},textfont={sf,small}]{caption}
 \DeclareCaptionLabelSeparator{bar}{ | }
 \captionsetup{labelsep=bar}
-
 \usepackage{url}
-\urlstyle{same}
-
 \usepackage{orcidlink}
 
 \makeatletter
@@ -45,15 +41,16 @@
     \date{\today}
 	
 	\begin{abstract}
-        Progressive acquisition of slowly-scanned images is desirable for drift correction and real-time visualization. 
+        Progressive acquisition of slowly-scanned images is desirable for drift-correction and realtime visualization.
         %
-        Interlacing methods are common approaches to storing and transmitting data on rectilinear grids, and here we propose using them for acquisition in scanning-mode image modalities. 
-        %
-        Especially in these cases, it is essential to make optimal use of sample points to speed up the scan and reduce damage to the subject. 
-        %
-        It has long been known that optimal sampling of band-limited signals is achieved using hexagonal scanning grids. 
-        %
-        In this note, we demonstrate two new methods for interlacing hexagonal grids, which enable early full field-of-view imaging with optimal sampling and resolution doubling.
+	    Interlacing methods are common approaches to storage and transmission of data on rectilinear grids, and here we propose using them for acquisition in scanning-mode image modalities.
+	    %
+	    Especially in these cases, it is important to make optimal use of sample points in order to speed up the scan and reduce damage to the subject.
+	    %
+	    It has long been known that optimal sampling of band-limited signals is achieved using hexagonal scanning grids.
+	    %
+	    In this note, we demonstrate two new methods for interlacing hexagonal
+        grids, which enable early full field-of-view imaging with optimal sampling and resolution doubling.
 	\end{abstract}
     
     \maketitle
@@ -63,7 +60,7 @@
     %
     The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. 
     %
-    The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (\url{http://energy.gov/downloads/doe-public-access-plan})}}
+    The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (\href{http://energy.gov/downloads/doe-public-access-plan}{http://energy.gov/downloads/doe-public-access-plan})}}
     
     The standard technique for obtaining digital images is through the interaction of imaging photons or electrons with a rectilinear grid of pixels that convert the impinged photons/electrons into electrical signals.
     %
@@ -90,34 +87,7 @@
     %
     There has been some study of hexagonal scan patterns in scanning optical microscopy\cite{heintzmann2007}, while in STEM some attention has been given to alternative scan patterns including spiral patterns\cite{spiral_scans}, while non-rectilinear scan patterns have been tried for SPM too\cite{non_gridded_spm}. 
     %
-    But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment, with only one recent preprint suggesting interlacing patterns for STEM experiments to reduce the dose\cite{interlacing}.  
-
-    \begin{figure*}
-        \includegraphics[
-            %trim=70 50 70 25,
-            clip,width=\textwidth]{scanline_phases.pdf}
-            \caption{
-                \label{fig:scanlinephases}
-                \textbf{Scanline interlacing method for rectilinear grids.}
-                %
-                Each circle represents a sample point (acquired pixel).
-                %
-                Starting from an initial grid (Phase 1), each subsequent phase consists of
-                doubling the rows of the grid by acquiring a new subscan (blue).
-                }
-    \end{figure*}
-
-    \begin{figure*}
-        \includegraphics[
-            %trim=70 50 70 25,
-            clip,width=\textwidth]{adam7_phases.pdf}
-            \caption{
-                \label{fig:adam7phases}
-                \textbf{The Adam7 interlacing method for rectilinear grids.}
-                %
-                Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
-            }
-    \end{figure*}
+    But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment. 
 
 
     In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which process multiple images of increasing resolution each with a full field of view; such methods are referred to as interlacing methods.
@@ -138,6 +108,21 @@
     %
     This is similar to standards in over-the-air transmission of digital video, such as progressive segmented frame and interlaced 1080i HDTV following the ITU-R BT.709-6\cite{hdtv}, in which odd and even scanlines are transmitted separately to enable higher framerates using interpolation of missing scanlines.
 
+    \begin{figure*}
+        \includegraphics[
+            %trim=70 50 70 25,
+            clip,width=\textwidth]{../figs/scanline_phases.pdf}
+            \caption{
+                \label{fig:scanlinephases}
+                \textbf{Scanline interlacing method for rectilinear grids.}
+                %
+                Each circle represents a sample point (acquired pixel).
+                %
+                Starting from an initial grid (Phase 1), each subsequent phase consists of
+                doubling the rows of the grid by acquiring a new subscan (blue).
+                }
+    \end{figure*}
+
     The Adam7 algorithm extends scanline interlacing by alternatively upscaling in each dimension, as is shown in \autoref{fig:adam7phases}.
     %
     After every other pass of Adam7, the image resolution is doubled (the number of pixels is quadrupled).
@@ -145,6 +130,20 @@
     We refer to two of these consecutive passes as a ``phase'', so that Adam7 consists of a base phase (initial low-resolution image) and three upscaling phases.
     %
     Although Adam7 contains 7 subgrids and 3 upscaling phases, it is trivially extended to any number of phases.
+
+
+    \begin{figure*}
+        \includegraphics[
+            %trim=70 50 70 25,
+            clip,width=\textwidth]{../figs/adam7_phases.pdf}
+            \caption{
+                \label{fig:adam7phases}
+                \textbf{The Adam7 interlacing method for rectilinear grids.}
+                %
+                Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
+            }
+    \end{figure*}
+
 
     \section{Hexagonal Interlacing Algorithms}
     \label{sec:hexinter}
@@ -160,34 +159,34 @@
 
     \subsection{\label{ssec:double-grid-interlacing}Basic Hex Interlacing}
 
-    A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacings are a multiple of $\left[1, \sqrt{3}\right]^T$ and which are offset from one another by half that spacing (see \autoref{fig:basicphases}, Phase 1).
+    A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacings are a multiple of $\mathbf{\left[1, \sqrt{3}\right]^T}$ and which are offset from one another by half that spacing (see Fig.~\ref{fig:basicphases}, Phase 1).
 
     \begin{figure*}
         % trim=left bottom right top
         \includegraphics[
             %trim=140 65 115 10,
-            clip,width=\textwidth]{basic_phases.pdf}
+            clip,width=\textwidth]{../figs/basic_phases.pdf}
         \caption{
             \label{fig:basicphases} 
             \textbf{Refining a hex grid through multiple interlacing passes.}
             %
             In each pass, previously sampled points are shown in gray.
             %
-            Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+            Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
             }
     \end{figure*}
 
-    To refine a coarse hex grid with spacing \textit{s}, we duplicate the grid reflected horizontally and shifted vertically by $\frac{\sqrt{3}}{2}s$ using two rectilinear grids.
+    To refine a coarse hex grid with spacing $\mathbf{s}$, we duplicate the grid reflected horizontally and shifted vertically by $\mathbf{\frac{\sqrt{3}}{2} s}$ using two rectilinear grids.
     %
-    The result is a rectilinear grid whose pixel spacing is $\left[\frac{s}{2}, \sqrt{3}\right]^T$.
+    The result is a rectilinear grid whose pixel spacing is $\mathbf{\left[\frac{s}{2}, \sqrt{3}\right]^T}$.
     %
-    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $\left[\sfrac{s}{2}, \sfrac{\sqrt{3}}{2}\right]^T$.
+    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $\mathbf{\left[\frac{s}{2}, \frac{\sqrt{3}}{2}\right]^T}$.
     %
     %These steps are shown in detail in Algorithm~\ref{alg:basic}
     %
     We refer to one of these upscaling operations as a ``phase'' consisting of 3 rectilinear grids.
     %
-    Additional phases are implemented identically, replacing \textit{s} with $\sfrac{s}{2}$.
+    Additional phases are implemented identically, replacing $\mathbf{s}$ with $\mathbf{\frac{s}{2}}$.
 
     %\begin{algorithm}
     %\caption{Basic hex interlacing algorithm.}\label{alg:basic}
@@ -221,14 +220,14 @@
     \begin{figure*}
         % trim=left bottom right top
         \includegraphics[%trim=130 100 100 65,
-            clip,width=\textwidth]{rotating_phases.pdf}
+            clip,width=\textwidth]{../figs/rotating_phases.pdf}
         \caption{
             \label{fig:rotatingphases} 
             \textbf{Refining a hex grid through multiple interlacing passes.}
             %
             In each pass, previously sampled points are shown in gray.
             %
-            Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+            Each pass consists of multiple rectilinear scans with aspect ratio $\mathbf{\sqrt{3}}$.
             }
     \end{figure*}
 
@@ -269,7 +268,7 @@
     %
     Each phase resembles the previous phase rotated by 120 degrees, resulting in three subsequences that each independently converge to the same (but rotated) normalized sampling density.
     %
-    More rigorously, denoting by $\mu_p$ the discrete probability measure supported at all points in the phases up to and including phase \textit{p} and placing uniform mass at each point, the subsequences $\mu_{3k+i}$ converge in measure to some continuous measures $\mu_1,\ \mu_2,\ \mu_3$ as $k\to\infty$ for \textit{i=1,2,3}.
+    More rigorously, denoting by $\mathbf{\mu_p}$ the discrete probability measure supported at all points in the phases up to and including phase $\mathbf{p}$ and placing uniform mass at each point, the subsequences $\mathbf{\mu_{3k+i}}$ converge in measure to some continuous measures $\mathbf{\mu_1,\ \mu_2,\ \mu_3}$ as $\mathbf{k\to\infty}$ for $\mathbf{i=1,2,3}$.
     %
 
 
@@ -302,8 +301,8 @@
     %
     We continue trimming off a single row from each end of the pattern after every second phase (i.e. on all subsequent odd phases).
     %
-    It is easy to check that this results in a pattern with $\frac{\left(4^{\lfloor n/2\rfloor + 1} + 2\right)}{3}$ columns and $2^{2n - 1}$ rows after each odd phase $n\left(n\ge 3\right)$, implying that as $n\to\infty$ the
-    ratio of columns to rows converges to $\sfrac{2}{3}$.
+    It is easy to check that this results in a pattern with $\mathbf{\frac{1}{3}\left(4^{\lfloor n/2\rfloor + 1} + 2\right)}$ columns and $\mathbf{2^{2n - 1}}$ rows after each odd phase $\mathbf{n \left(n\ge 3\right)}$, implying that as $\mathbf{n\to\infty}$ the
+    ratio of columns to rows converges to $\frac{2}{3}$.
     %
     The result is a method we call the trimmed rotational hex interlacing method (TRHI) and is shown in \autoref{fig:trimmedrotatingphases}.
 
@@ -311,7 +310,7 @@
     \begin{figure*}
         % trim=left bottom right top
         \includegraphics[%trim=130 100 100 65,
-            clip,width=\textwidth]{rotating_phases_trimmed.pdf}
+            clip,width=\textwidth]{../figs/rotating_phases_trimmed.pdf}
         \caption{
             \label{fig:trimmedrotatingphases} 
             \textbf{The trimmed variant of the rotational hex interlacing method.}
@@ -334,33 +333,34 @@
     \begin{figure*}
         % trim=left bottom right top
         \includegraphics[%trim=130 100 100 65,
-            clip,width=.45\textwidth]{converged_hex_density.pdf}
+            clip,width=.5\textwidth]{../figs/converged_hex_density.pdf}
         \includegraphics[%trim=130 100 100 65,
-            clip,width=.45\textwidth]{converged_hex_density_trimmed.pdf}
+            clip,width=.5\textwidth]{../figs/converged_hex_density_trimmed.pdf}
         \caption{
             \label{fig:hexdensity}
-            \textbf{Asymptotic sampling density.} 
+            \textbf{Asymptotic sampling density} 
+            (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
             %
-            This is shown (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
+            Each phase results in a rotation of this pattern by 120 degrees clockwise.
             %
-            Each phase results in a rotation of this pattern by $120^{\circ}$ clockwise.
+            %This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
             %
-            This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
-            %
-            Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of $\sfrac{2}{3}$, and the obtuse isosceles triangular regions have an average density of $\sfrac{1}{3}$, implying the interior region contains half the overall number of sample points.
+            Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of 2/3, and the obtuse isosceles triangular regions have an average density of 1/3, implying the interior region contains half the overall number of sample points.
             }
     \end{figure*}
 
 
-    \begin{figure}
+    \begin{figure*}
         % trim=left bottom right top
         \includegraphics[%trim=130 100 100 65,
-            clip,width=0.5\textwidth]{angular_density.pdf}
+            clip,width=\textwidth]{../figs/angular_density.pdf}
         \caption{
         \label{fig:angdens} 
-            \textbf{Asymptotic angular distribution.} The distribution of the sample points using each of the proposed methods -- uniform, square, RHI and TRHI are shown. Each method shown here was normalized to have equal area (same total number of sample points).
+            \textbf{Asymptotic angular distribution of sample points using each of the proposed methods.}
+            %
+            %Each method was normalized to have equal area (same total number of sample points).
         }
-    \end{figure}
+    \end{figure*}
 
     \subsection{\label{ssec:recursive}Recursive Rectilinear Interlacing}
 
@@ -372,25 +372,28 @@
     %
     In order to enable further adaptivity, we propose to interlace the final rectilinear subscan as well by applying Adam7 interlacing to generate the final subscan.
     %
-    This results in a new final subscan containing $\sfrac{1}{4}$ the total number of points, which itself could be interlaced, and so on recursively.
+    This results in a new final subscan containing $\frac{1}{4}$ the total number of points, which itself could be interlaced, and so on recursively.
     %
-    We refer to this approach of using \textit{m} recursive Adam7 passes in the final subscan with the suffix -$\mathit{m}$Adam7, e.g. TRHI6-2Adam7.
+    We refer to this approach of using $\mathbf{m}$ recursive Adam7 passes in the final subscan with the suffix -$\mathit{m}$Adam7, e.g. TRHI6-2Adam7.
     %
     The effect of this further interlacing is shown in \autoref{fig:subscanlengths}, showing finer granularity in the second half of the scan using recursive interlacing.
 
-    \begin{figure}
+
+    \begin{figure*}
         % trim=left bottom right top
         \includegraphics[%trim=130 100 100 65,
-            clip,width=0.5\textwidth]{subscan_splits_color.pdf}
+            clip,width=\textwidth]{../figs/subscan_splits_color.pdf}
         \caption{
             \label{fig:subscanlengths} 
-            \textbf{Subscan lengths as portion of overall scan time for various approaches.} 
+            \textbf{Subscan lengths as portion of overall scan time for various approaches.}
             %
-            Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan. 
+            Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan.
             %
-            Colors match those shown in \autoref{fig:adam7phases} -- \autoref{fig:trimmedrotatingphases}.
+                Colors match those shown in
+                Figs.~\autoref{fig:adam7phases}--\autoref{fig:trimmedrotatingphases}.
             }
-    \end{figure}
+    \end{figure*}
+
 
     \subsection{\label{ssec:montaging}Montaging Considerations}
 
@@ -408,7 +411,7 @@
 
     \begin{figure*}
         \includegraphics[%trim=130 100 100 65,
-            clip,width=\textwidth]{combined_montage.pdf}
+            clip,width=\textwidth]{../figs/combined_montage.pdf}
         \caption{
             \label{fig:montage}\textbf{Montaging schemes for square and hexagonal scan patterns.}
             %
@@ -440,7 +443,7 @@
     Notice that in a loose montage, due to the partial sampling outside of the interior hexagons, some information exists that can be used for alignment, even though no fully-sampled regions are overlapped.
 
 
-    For reference, the standard approach to rectilinear montaging with overlap $0<\ell<1$ results in an oversampling factor of $\sfrac{1}{(1-\ell)^2}$, equal to $1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
+    For reference, the standard approach to rectilinear montaging with overlap $0<\ell<1$ results in an oversampling factor of $\frac{1}{(1-\ell)^2}$, equal to $1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
     %
     The oversampling of RHI using a tight grid is exactly $2\times$ (equivalent rectilinear overlap: 29.3\%).
     %
@@ -484,17 +487,14 @@
 
     Wavelets have hierarchical property and apply to hexagonal grids \cite{hex_compression} but doesn't work for point sampling methods like in scanning electron microscopy modalities.
 
-    \section{Code and Data Availability}
+    \section*{Code and Data Availability}
 
-    The codes for generating this manuscript and all figures included are available at \url{https://github.com/jacobhinkle/hex_interlacing}. 
+    The codes for generating this manuscript and all figures included are available at \href{https://github.com/jacobhinkle/hex_interlacing}{the linked GitHub repository}. 
 
-    \section{\label{sec:contribs}Author Contributions}
-    JDH and DM came up with this idea while trying to understand why square scan patterns are the most common ones, and trying to apply the close-packing rule to scan patterns. Both of them developed the codes and co-wrote the paper.
-
-    \section{\label{sec:acknowledgement}Acknowledgements}
+    \section*{\label{sec:acknowledgement}Acknowledgements}
 
     This research is sponsored by the INTERSECT Initiative as part of the Laboratory Directed Research and Development Program of Oak Ridge National Laboratory, managed by UT-Battelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. 
-    
+
     \bibliography{hex}
 
 \end{document}

@@ -6,6 +6,7 @@
 *.log
 *.swp
 *.out
+*.pdf
 hexNotes.bib
 hex.synctex.gz
 .DS_Store
