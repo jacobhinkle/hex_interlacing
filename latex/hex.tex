@@ -92,10 +92,10 @@
     %
     But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment, with only one recent preprint suggesting interlacing patterns for STEM experiments to reduce the dose\cite{interlacing}.  
 
-    \begin{figure*}
+    \begin{figure}
         \includegraphics[
             %trim=70 50 70 25,
-            clip,width=\textwidth]{scanline_phases.pdf}
+            clip,width=0.5\textwidth]{scanline_phases.pdf}
             \caption{
                 \label{fig:scanlinephases}
                 \textbf{Scanline interlacing method for rectilinear grids.}
@@ -105,20 +105,20 @@
                 Starting from an initial grid (Phase 1), each subsequent phase consists of
                 doubling the rows of the grid by acquiring a new subscan (blue).
                 }
-    \end{figure*}
+    \end{figure}
 
-    \begin{figure*}
+    \begin{figure}
         \includegraphics[
             %trim=70 50 70 25,
-            clip,width=\textwidth]{adam7_phases.pdf}
+            clip,width=0.5\textwidth]{adam7_phases.pdf}
             \caption{
                 \label{fig:adam7phases}
                 \textbf{The Adam7 interlacing method for rectilinear grids.}
                 %
                 Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
             }
-    \end{figure*}
-
+    \end{figure}
+    
 
     In this note, we explore methods for progressive acquisition or transmission of hexagonal grids which process multiple images of increasing resolution each with a full field of view; such methods are referred to as interlacing methods.
     %
@@ -163,9 +163,7 @@
     A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacings are a multiple of $\left[1, \sqrt{3}\right]^T$ and which are offset from one another by half that spacing (see \autoref{fig:basicphases}, Phase 1).
 
     \begin{figure*}
-        % trim=left bottom right top
         \includegraphics[
-            %trim=140 65 115 10,
             clip,width=\textwidth]{basic_phases.pdf}
         \caption{
             \label{fig:basicphases} 
