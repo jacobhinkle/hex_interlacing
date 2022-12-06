@@ -1,4 +1,0 @@
-scanlines
-montaging
-subscan
-adaptivity

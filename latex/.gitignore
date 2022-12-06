@@ -7,6 +7,9 @@
 *.swp
 *.out
 *.pdf
+.ipynb_checkpoints/
+latex/.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
 hexNotes.bib
 hex.synctex.gz
 .DS_Store
