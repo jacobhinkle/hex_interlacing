@@ -4,7 +4,6 @@
 \usepackage[version=3]{mhchem}
 \usepackage{multirow}
 \usepackage{sourcecodepro, sourcesanspro, sourceserifpro}
-%\usepackage{kpfonts}
 \usepackage[T1]{fontenc}
 \usepackage[protrusion=true,expansion=true,final]{microtype}
 \usepackage{mathastext, bm}
@@ -28,6 +27,7 @@
 \urlstyle{same}
 
 \usepackage{orcidlink}
+\newcommand*{\blu}{\textcolor{blue}}
 
 \makeatletter
 \def\blfootnote{\gdef\@thefnmark{}\@footnotetext} %Allow a blank unreferenced footnote to be placed
@@ -217,7 +217,7 @@
     The result is a method which can start from a single point or small grid and produce a hexagonally-shaped hex grid, placing samples more in a more uniform angular distribution about the center.
 
     \begin{figure*}
-        % trim=left bottom right top
+        
         \includegraphics[%trim=130 100 100 65,
             clip,width=\textwidth]{rotating_phases.pdf}
         \caption{
@@ -230,24 +230,13 @@
             }
     \end{figure*}
 
-    %\begin{algorithm}
-    %\caption{Rotational hex interlacing algorithm.}\label{alg:rotating}
-    %\begin{algorithmic}
-        %\State $c \gets (0, 0)$
-    %\end{algorithmic}
-    %\end{algorithm}
-
-    %NOTE: Note after Phase $n$, all points on the lattice within $2^{n-1}$ graph distance of the origin are included in the fully-sampled interior region.
-
-    %NOTE: Note similarity to basic algorithm and to Adam7. We are always just doubling the hex grid along one of the lines of symmetry which creates a Cartesion grid, then filling in a direction perpendicular. The whole rotation thing is just an illusion because of using $\sqrt{3}$ aspect ratio subgrids instead of a $\frac{1}{\sqrt{3}}$ aspect subgrid rotated 90 degrees!
-
     \subsubsection{\label{sec:density}Sampling Density}
 
     Note that unlike in other methods, using this method there are missing pixels on the periphery of the upscaled scan pattern.
     %
     That is, an interior hexagon is covered fully after each phase, but the exterior hexagon containing all of the points is not fully sampled.
     %
-    However, note that each of the three full-diamater lines is fully sampled in 1D after each pass.
+    However, note that each of the three full-diameter lines is fully sampled in 1D after each pass.
 
 
     In this section, we characterize the density of sampling in various regions using the rotating hex interlacing method described above.
@@ -307,7 +296,7 @@
 
 
     \begin{figure*}
-        % trim=left bottom right top
+        %
         \includegraphics[%trim=130 100 100 65,
             clip,width=\textwidth]{rotating_phases_trimmed.pdf}
         \caption{
@@ -330,16 +319,14 @@
     By comparison, the basic interlacing method, while simple to implement, results in a less uniform angular distribution of points than the trimmed rotational method~(see \autoref{fig:angdens}).
 
     \begin{figure*}
-        % trim=left bottom right top
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=.45\textwidth]{converged_hex_density.pdf}
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=.45\textwidth]{converged_hex_density_trimmed.pdf}
+        %
+        \includegraphics[
+            clip,width=\textwidth]{converged_hex_density_both.pdf}
         \caption{
             \label{fig:hexdensity}
             \textbf{Asymptotic sampling density.} 
             %
-            This is shown (in arbitrary units) using rotational hex interlacing (left) and its trimmed variant (right).
+            This is shown (in arbitrary units) using rotational hex interlacing (\textbf{a}) and its trimmed variant (\textbf{b}).
             %
             Each phase results in a rotation of this pattern by $120^{\circ}$ clockwise.
             %
@@ -351,7 +338,7 @@
 
 
     \begin{figure}
-        % trim=left bottom right top
+        %
         \includegraphics[%trim=130 100 100 65,
             clip,width=0.5\textwidth]{angular_density.pdf}
         \caption{
@@ -377,7 +364,7 @@
     The effect of this further interlacing is shown in \autoref{fig:subscanlengths}, showing finer granularity in the second half of the scan using recursive interlacing.
 
     \begin{figure}
-        % trim=left bottom right top
+        %
         \includegraphics[%trim=130 100 100 65,
             clip,width=0.5\textwidth]{subscan_splits_color.pdf}
         \caption{
@@ -472,13 +459,26 @@
 
     Rotational interlacing is achieved by rotation of the fast scan axis among 6 equally spaced directions.
     %
-    In the presence of sample drift, flyback delays, or lash in the scanning device, this may enable detection of non-uniform distortio that would be indistinguishable from image structure when using fixed fast and slow imaging axes.
+    In the presence of sample drift, flyback delays, or lash in the scanning device, this may enable detection of non-uniform distortions that would be indistinguishable from image structure when using fixed fast and slow imaging axes.
     %
     Rotation of the fast axis is also possible in rectilinear scanning, but only 4 axes will be available in that case instead of six.
     %
     The optimal sampling efficiency of hexagonal grids, along with the potential for montaging without increasing the dose (using TRHI and a loose grid), present an attractive opportunity for development of modality-specific methods to enable large-FOV imaging of dose-sensitive samples.
 
-    \subsection{\label{ssec:wavelets}Related Work}
+    \subsection{\label{ssec:wavelets}Further Directions}
+
+    \begin{figure}
+        %
+        \includegraphics[
+            clip,width=0.5\textwidth]{dose_and_time.pdf}
+            %
+        \caption{
+        \label{fig:dose} 
+            \textbf{Total Dose and time taken. a,} The total cumulative dose as a function of the pass number. \textbf{b,} The time spent per pass, plotted in log-scale.).
+        }
+        %
+    \end{figure}
+    The hexagonal interlacing scheme as described in this work can be extended further for low-dose electron microscopy, especially for dose fractionation between multiple scanning passes.
 
     Wavelets have hierarchical property and apply to hexagonal grids \cite{hex_compression} but doesn't work for point sampling methods like in scanning electron microscopy modalities.
 
