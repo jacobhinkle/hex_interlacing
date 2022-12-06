@@ -28,6 +28,7 @@
 
 \usepackage{orcidlink}
 \newcommand*{\blu}{\textcolor{blue}}
+\renewcommand*{\figureautorefname}{Fig.}
 
 \makeatletter
 \def\blfootnote{\gdef\@thefnmark{}\@footnotetext} %Allow a blank unreferenced footnote to be placed
@@ -67,17 +68,24 @@
     
     The standard technique for obtaining digital images is through the interaction of imaging photons or electrons with a rectilinear grid of pixels that convert the impinged photons/electrons into electrical signals.
     %
-    Several detection schemes exist, such as charge-coupled devices (CCD), or complementary metal oxide semiconductor (CMOS) detectors\cite{electron_detectors_review, ccd_cmos_review}.
+    Several different types of detectors exist, such as charge-coupled devices (CCD), or complementary metal oxide semiconductor (CMOS) detectors\cite{electron_detectors_review, ccd_cmos_review}.
     %
-    In this detection scheme, the region of interest to imaged is illuminated by the electron/photon beam, and the exit wave is captured by the detector subsequently.
+    Whether it is a CCD or a CMOS, in both cases, the region of interest (ROI) to imaged is illuminated by the electron/photon beam, and the exit wave is captured by the detector subsequently.
     %
     Such a system has wide applicability from optical microscopes with visible light photons, to X-Ray microscopes with high energy photons, and even transmission electron microscopes.
     %
     However, in some devices a subject is instead probed in a predefined programmable pattern to obtain a grid of point measurements.
     %
-    This is the case in scanning probe microscopy (SPM), scanning transmission electron microscopy (STEM), confocal laser scanning microscopy, and others.
+    In such detection schemes, rather than a single exit wave, there is an exit wave per probe position, and the digital image that is formed is a functional of the exit wave.
     %
-    %In these scanning modalities, sample efficiency and other practical factors are often of the utmost importance.
+    This is the case for scanning probe microscopy (SPM), scanning transmission electron microscopy (STEM), confocal laser scanning microscopy, and others.
+    %
+    Recently, with the advances in detector and electronic storage technology, rather than saving a reduced functional, the complete exit wave can be saved per probe position.
+    %
+    Such setups exist in electron microscopy as 4D-STEM, or in synchrotrons as 4D-STXM and are of enormous interest currently, because of the lost phase information that can be gleaned from such datasets through solving inverse problems\cite{ophus_4dstem}.
+    %
+    Since rather than a single electron beam, a probe is rastering across the sample - in these scanning modalities, sampling efficiency, scanning time and scanning distortions are often of the utmost importance.
+    %
     Particularly when imaging sensitive subjects using invasive modalities such as these, sampling efficiency is critical to obtaining useful images before probe-induced damage ruins the sample.
     %
 
@@ -90,32 +98,34 @@
     %
     There has been some study of hexagonal scan patterns in scanning optical microscopy\cite{heintzmann2007}, while in STEM some attention has been given to alternative scan patterns including spiral patterns\cite{spiral_scans}, while non-rectilinear scan patterns have been tried for SPM too\cite{non_gridded_spm}. 
     %
-    But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment, with only one recent preprint suggesting interlacing patterns for STEM experiments to reduce the dose\cite{interlacing}.  
+    But to our knowledge hexagonal scan patterns have not yet been used in a real-world experiment, with only one recent preprint suggesting interlacing square patterns for STEM experiments to reduce the effective electron dose\cite{interlacing}.  
 
     \begin{figure}
         \includegraphics[
-            %trim=70 50 70 25,
-            clip,width=0.5\textwidth]{scanline_phases.pdf}
+            width=\linewidth]{scanline_phases.pdf}
             \caption{
                 \label{fig:scanlinephases}
                 \textbf{Scanline interlacing method for rectilinear grids.}
                 %
                 Each circle represents a sample point (acquired pixel).
                 %
-                Starting from an initial grid (Phase 1), each subsequent phase consists of
-                doubling the rows of the grid by acquiring a new subscan (blue).
+                Starting from an initial grid (Phase 1, as shown in \textbf{a}), each subsequent phase (\textbf{b--d}) consists of
+                doubling the rows of the grid by acquiring a new subscan. 
+                %
+                In each figure, the current scan is shown in blue, while the previous scans are shown in gray.
                 }
     \end{figure}
 
     \begin{figure}
         \includegraphics[
-            %trim=70 50 70 25,
-            clip,width=0.5\textwidth]{adam7_phases.pdf}
+            width=\linewidth]{adam7_phases.pdf}
             \caption{
                 \label{fig:adam7phases}
                 \textbf{The Adam7 interlacing method for rectilinear grids.}
                 %
-                Starting from an initial grid (Phase 1), each subsequent phase consists of doubling the columns (blue) then rows (green) of the grid.
+                Starting from an initial grid (Phase 1, as shown in \textbf{a}), each subsequent phase (\textbf{b--d}) consists of doubling the columns (blue) then rows (red) of the grid. 
+                %
+                In each phase after the first one (\textbf{b--d}), the gray points refer to the previously scanned positions.
             }
     \end{figure}
     
@@ -124,7 +134,7 @@
     %
     Previous approaches to interlacing were designed to enable interpolation of a high-resolution image while the image is transmitted over a bandwidth-limited connection.
     %
-    We notice that full-FOV multi-pass scanning via interlacing offers a number of advantages in scientific imaging despites its apparent added complexity: for example it enables iterative reconstruction to begin while data is still being acquired, and successive passes offer information that could be used to correct for sample and instrument drift.
+    We notice that full field of view (FOV) multi-pass scanning via interlacing offers a number of advantages in scientific imaging despite its apparent added complexity: for example it enables iterative reconstruction to begin while data is still being acquired, and successive passes offer information that could be used to correct for sample and instrument drift.
     %
     In the present work we extend conventional image interlacing to hexagonal grids and discuss their characteristics in the context of optimal sampling for scanning imaging modalities.
     %
@@ -160,48 +170,43 @@
 
     \subsection{\label{ssec:double-grid-interlacing}Basic Hex Interlacing}
 
-    A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacings are a multiple of $\left[1, \sqrt{3}\right]^T$ and which are offset from one another by half that spacing (see \autoref{fig:basicphases}, Phase 1).
+    A hexagonal grid can be constructed from two identical rectilinear grids whose pixel spacing are a multiple of $\left[1, \sqrt{3}\right]^T$ and which are offset from one another by half that spacing (see the Phase 1 image in \autoref{fig:basicphases}\blu{a}).
 
     \begin{figure*}
-        \includegraphics[
-            clip,width=\textwidth]{basic_phases.pdf}
-        \caption{
-            \label{fig:basicphases} 
-            \textbf{Refining a hex grid through multiple interlacing passes.}
+        \includegraphics[width=\textwidth]
             %
-            In each pass, previously sampled points are shown in gray.
+            {basic_phases.pdf}
             %
-            Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
-            }
+            \caption{
+                \label{fig:basicphases}
+                \textbf{Refining a hex grid through multiple interlacing passes. a, } A standard hexagonal scan pattern, built using rectilinear coil motion, where alternate passes are shifted $\sqrt{3}$ scan positions to the right. 
+                %
+                The original scan positions are in orange, while the shifted positions are in blue.
+                %
+                \textbf{b--c, }
+                %
+                In each pass, the previously sampled points are shown in gray, while the current sampling points are shown in green and orange.
+                %
+                Each pass consists of multiple rectilinear scans with aspect ratio $\sqrt{3}$.
+                }
     \end{figure*}
 
     To refine a coarse hex grid with spacing \textit{s}, we duplicate the grid reflected horizontally and shifted vertically by $\frac{\sqrt{3}}{2}s$ using two rectilinear grids.
     %
     The result is a rectilinear grid whose pixel spacing is $\left[\frac{s}{2}, \sqrt{3}\right]^T$.
     %
-    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $\left[\sfrac{s}{2}, \sfrac{\sqrt{3}}{2}\right]^T$.
-    %
-    %These steps are shown in detail in Algorithm~\ref{alg:basic}
+    We then fill the gaps with a double-resolution rectilinear grid to produce the final double-resolution hex grid with spacing $\left[\frac{s}{2}, \frac{\sqrt{3}}{2}\right]^T$.
     %
     We refer to one of these upscaling operations as a ``phase'' consisting of 3 rectilinear grids.
     %
-    Additional phases are implemented identically, replacing \textit{s} with $\sfrac{s}{2}$.
+    Additional phases are implemented identically, replacing \textit{s} with $\frac{s}{2}$.
 
-    %\begin{algorithm}
-    %\caption{Basic hex interlacing algorithm.}\label{alg:basic}
-    %\begin{algorithmic}
-        %\State $c \gets (0, 0)$
-    %\end{algorithmic}
-    %\end{algorithm}
-
-
-    %
     The first two subgrids (shown in blue and orange in \autoref{fig:basicphases}) have the effect of doubling resolution in one direction
     resulting in a rectilinear grid, and the third subgrid (shown in green) doubles resolution in the orthogonal direction but must be
     offset horizontally resulting in a new hexagonal grid.
     %
     This method is thus a straightforward extension of Adam7 to hexagonal grids, and
-    is simple to implemente.
+    is simple to implemented.
 
 
     \subsection{\label{ssec:triple-grid-interlacing}Rotational Hex Interlacing}
@@ -214,15 +219,15 @@
     %
     In this method, which we call the ``rotational hex interlacing method,'' we perform this duplication then fill in the missing rectilinear grid which is again rotated by $\mp 120^{\circ}$.
     %
-    The result is a method which can start from a single point or small grid and produce a hexagonally-shaped hex grid, placing samples more in a more uniform angular distribution about the center.
+    The result is a method which can start from a single point or small grid and produce a hexagonally shaped hex grid, placing samples more in a more uniform angular distribution about the center.
 
     \begin{figure*}
         
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=\textwidth]{rotating_phases.pdf}
+        \includegraphics[%
+            width=\textwidth]{rotating_phases.pdf}
         \caption{
             \label{fig:rotatingphases} 
-            \textbf{Refining a hex grid through multiple interlacing passes.}
+            \textbf{Refining a hex grid through multiple interlacing passes. a--f, }
             %
             In each pass, previously sampled points are shown in gray.
             %
@@ -260,18 +265,18 @@
     %
 
 
-    To see that the limit is a continuous measure, note that rotational hex interlacing consists of repeated applications of rectangular grids, and that each of the three subsequences contains the same repeated grids with ever-increasing numbers of points, resulting in three limiting distributions which are themselves superpositions of three indicator functions over the rotated rectangles.
+    To observe that the limit is a continuous measure, note that rotational hex interlacing consists of repeated applications of rectangular grids, and that each of the three subsequences contains the same repeated grids with ever-increasing numbers of points, resulting in three limiting distributions which are themselves superpositions of three indicator functions over the rotated rectangles.
     %
     Furthermore, these limiting measures are simple $120^{\circ}$ rotations of one another, so we only examine one in detail.
 
 
-    To see that each subsequence converges, consider a sequence consisting of a fixed pattern for one phase (i.e. no $120^{\circ}$ rotation), but instead applying the inverse $120^{\circ}$ rotation to all previous points.
+    To observe that each subsequence converges, consider a sequence consisting of a fixed pattern for one phase (i.e. no $120^{\circ}$ rotation), but instead applying the inverse $120^{\circ}$ rotation to all previous points.
     %
     Since we cannot change the locations of previously-acquired points, this situation is non-physical, but is useful for analyzing the limiting behavior, as it results in a situation where the same update is applied repeatedly.
     %
     Since a growing number of points are added during each phase (exactly double), the limiting density must be equal to the average of itself and a version of itself inversely rotated by $120^{\circ}$.
     %
-    As each phase consists of three rectangles oriented at $120^{\circ}$ to one another, it is easy to see that assigning values of 1, 2, and 4 to these rectangles satisfies this condition (see the left-hand panel of \autoref{fig:hexdensity}).
+    As each phase consists of three rectangles oriented at $120^{\circ}$ to one another, it is easy to observe that assigning values of 1, 2, and 4 to these rectangles satisfies this condition (see \autoref{fig:hexdensity}\blu{a}).
     %
     Note that in the figure, integer values are shown instead of normalized point densities, in order to more clearly display the relative sampling densities in each region.
     %
@@ -290,7 +295,7 @@
     We continue trimming off a single row from each end of the pattern after every second phase (i.e. on all subsequent odd phases).
     %
     It is easy to check that this results in a pattern with $\frac{\left(4^{\lfloor n/2\rfloor + 1} + 2\right)}{3}$ columns and $2^{2n - 1}$ rows after each odd phase $n\left(n\ge 3\right)$, implying that as $n\to\infty$ the
-    ratio of columns to rows converges to $\sfrac{2}{3}$.
+    ratio of columns to rows converges to $\frac{2}{3}$.
     %
     The result is a method we call the trimmed rotational hex interlacing method (TRHI) and is shown in \autoref{fig:trimmedrotatingphases}.
 
@@ -301,11 +306,13 @@
             clip,width=\textwidth]{rotating_phases_trimmed.pdf}
         \caption{
             \label{fig:trimmedrotatingphases} 
-            \textbf{The trimmed variant of the rotational hex interlacing method.}
+            \textbf{The trimmed variant of the rotational hex interlacing method. a--f, }
             %
             The first two phases are identical to the original rotational method, but the grids are only 75\% of the original height in subsequent phases.
             %
             The interior hexagon is still fully sampled while sparing 50\% of samples in the periphery.
+            %
+            This results in lower total electron dose for the higher order passes.
             }
     \end{figure*}
 
@@ -316,35 +323,42 @@
     %
     This results in a concentration of points in the hexagonal-shaped interior region.
     %
-    By comparison, the basic interlacing method, while simple to implement, results in a less uniform angular distribution of points than the trimmed rotational method~(see \autoref{fig:angdens}).
+    By comparison, the basic interlacing method, while simple to implement, results in a less uniform angular distribution of points than the trimmed rotational method (see \autoref{fig:angdens}).
 
     \begin{figure*}
         %
-        \includegraphics[
-            clip,width=\textwidth]{converged_hex_density_both.pdf}
-        \caption{
-            \label{fig:hexdensity}
-            \textbf{Asymptotic sampling density.} 
-            %
-            This is shown (in arbitrary units) using rotational hex interlacing (\textbf{a}) and its trimmed variant (\textbf{b}).
-            %
-            Each phase results in a rotation of this pattern by $120^{\circ}$ clockwise.
-            %
-            This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
-            %
-            Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of $\sfrac{2}{3}$, and the obtuse isosceles triangular regions have an average density of $\sfrac{1}{3}$, implying the interior region contains half the overall number of sample points.
-            }
+        \includegraphics[width=\textwidth]
+            {converged_hex_density_both.pdf}
+            \caption{
+                \label{fig:hexdensity}
+                \textbf{Asymptotic sampling density.} 
+                %
+                This is shown (in arbitrary units) using rotational hex interlacing (\textbf{a}) and its trimmed variant (\textbf{b}).
+                %
+                Each phase results in a rotation of this pattern by $120^{\circ}$ clockwise.
+                %
+                This converges to four decimal places after eight phases, and to seven decimal places after 13 phases.
+                %
+                Note that the interior hexagon occupies one third the total area, the equilateral triangular regions have an average density of $\frac{2}{3}$, and the obtuse isosceles triangular regions have an average density of $\frac{1}{3}$, implying the interior region contains half the overall number of sample points.
+                }
     \end{figure*}
 
 
     \begin{figure}
         %
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=0.5\textwidth]{angular_density.pdf}
-        \caption{
-        \label{fig:angdens} 
-            \textbf{Asymptotic angular distribution.} The distribution of the sample points using each of the proposed methods -- uniform, square, RHI and TRHI are shown. Each method shown here was normalized to have equal area (same total number of sample points).
-        }
+        \includegraphics[
+            %
+            width=\linewidth]{angular_density.pdf}
+            %
+            \caption{
+                \label{fig:angdens}
+                %
+                \textbf{Asymptotic angular distribution.} 
+                %
+                The distribution of the sample points using each of the proposed methods -- uniform, square, RHI and TRHI are shown. 
+                %
+                Each method shown here was normalized to have equal area (same total number of sample points).
+                }
     \end{figure}
 
     \subsection{\label{ssec:recursive}Recursive Rectilinear Interlacing}
@@ -357,7 +371,7 @@
     %
     In order to enable further adaptivity, we propose to interlace the final rectilinear subscan as well by applying Adam7 interlacing to generate the final subscan.
     %
-    This results in a new final subscan containing $\sfrac{1}{4}$ the total number of points, which itself could be interlaced, and so on recursively.
+    This results in a new final subscan containing $\frac{1}{4}$ the total number of points, which itself could be interlaced, and so on recursively.
     %
     We refer to this approach of using \textit{m} recursive Adam7 passes in the final subscan with the suffix -$\mathit{m}$Adam7, e.g. TRHI6-2Adam7.
     %
@@ -365,16 +379,18 @@
 
     \begin{figure}
         %
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=0.5\textwidth]{subscan_splits_color.pdf}
-        \caption{
-            \label{fig:subscanlengths} 
-            \textbf{Subscan lengths as portion of overall scan time for various approaches.} 
+        \includegraphics[width=\linewidth]
             %
-            Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan. 
-            %
-            Colors match those shown in \autoref{fig:adam7phases} -- \autoref{fig:trimmedrotatingphases}.
-            }
+            {subscan_splits_color.pdf}
+            \caption{
+                \label{fig:subscanlengths} 
+                %
+                \textbf{Subscan lengths as portion of overall scan time for various approaches.}
+                %
+                Within each row, each colored bar represents a single rectilinear subscan and its width is proportional to the number of sample points in that subscan. 
+                %
+                Colors match those shown in \autoref{fig:adam7phases} -- \autoref{fig:trimmedrotatingphases}.
+                }
     \end{figure}
 
     \subsection{\label{ssec:montaging}Montaging Considerations}
@@ -392,8 +408,7 @@
     %shiftin gthe first and third tiles vertically.
 
     \begin{figure*}
-        \includegraphics[%trim=130 100 100 65,
-            clip,width=\textwidth]{combined_montage.pdf}
+        \includegraphics[width=\textwidth]{combined_montage.pdf}
         \caption{
             \label{fig:montage}\textbf{Montaging schemes for square and hexagonal scan patterns.}
             %
@@ -422,26 +437,36 @@
     %
     We refer to the scheme in which fully-sampled hexagonal interiors are aligned without gaps along their sides as a ``tight'' montage, while we refer to aligning them along their vertices introducing small triangular gaps as a ``loose'' montage.
     %
-    Notice that in a loose montage, due to the partial sampling outside of the interior hexagons, some information exists that can be used for alignment, even though no fully-sampled regions are overlapped.
+    Notice that in a loose montage, due to the partial sampling outside the interior hexagons, some information exists that can be used for alignment, even though no fully-sampled regions are overlapped.
 
 
-    For reference, the standard approach to rectilinear montaging with overlap $0<\ell<1$ results in an oversampling factor of $\sfrac{1}{(1-\ell)^2}$, equal to $1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
+    For reference, the standard approach to rectilinear montaging with overlap $0<\ell<1$ results in an oversampling factor of $\frac{1}{(1-\ell)^2}$, equal to $1.23\times$ for 10\% and $1.56\times$ for 20\% overlap ratios.
     %
     The oversampling of RHI using a tight grid is exactly $2\times$ (equivalent rectilinear overlap: 29.3\%).
     %
-    To see this, split the sampling pattern shown in \autoref{fig:hexdensity} into three rectangles and notice that each rectangle is part of a tightly packed rectangular grid with $2\times$ oversampling.
+    To observe this, split the sampling pattern shown in \autoref{fig:hexdensity} into three rectangles and notice that each rectangle is part of a tightly packed rectangular grid with $2\times$ oversampling.
     %
-    Using trimming (TRHI) reduces oversampling from $2\times$ to 4/3 (equivalent rectlinear overlap: 13.4\%), by introducing gaps into the rectangular grids.
+    Using trimming (TRHI) reduces oversampling from $2\times$ to 4/3 (equivalent rectilinear overlap: 13.4\%), by introducing gaps into the rectangular grids.
     %
-    If instead a loose montage grid is used, then using TRHI results in uniform overall sampling density of $1\times$ (equivalent rectilinear overlap: 0\%), since the undersampled exterior portions overlap perfectly (under zero misalignment).
+    If instead a loose montage grid is used, then using TRHI results in uniform overall sampling density of $1\times$ (equivalent rectilinear overlap: 0\%), since the under-sampled exterior portions overlap perfectly (under zero misalignment).
     %
     Unlike with a 0\% overlap rectilinear grid, the loose TRHI montage still has significant overlap, with each tile overlapping all of its six neighbors.
     %
     Using RHI in the loose configuration without trimming presents an alternative with more overlap and an average oversampling of $1.5\times$ (equivalent rectilinear overlap: 18.4\%).
 
     \section{\label{sec:conclusion}Conclusion}
+    \begin{figure}
+        %
+        \includegraphics[width=\linewidth]{dose_and_time.pdf}
+            %
+        \caption{
+        \label{fig:dose} 
+            \textbf{Total Dose and time taken. a,} The total cumulative dose as a function of the pass number. \textbf{b,} The time spent per pass, plotted in log-scale.
+        }
+        %
+    \end{figure}
 
-    Interlaced scan patterns provide a potential for whole-FOV information to be acquired very early in the scan.
+    Interlaced scan patterns provide a potential for whole FOV information to be acquired very early in the scan.
     %
     In a microscopy setting this could be useful in estimating and correcting for sample drift during the scan, or to salvage an image that is degraded due to late-stage beam-induced damage in dose-sensitive samples.
     %
@@ -463,24 +488,23 @@
     %
     Rotation of the fast axis is also possible in rectilinear scanning, but only 4 axes will be available in that case instead of six.
     %
-    The optimal sampling efficiency of hexagonal grids, along with the potential for montaging without increasing the dose (using TRHI and a loose grid), present an attractive opportunity for development of modality-specific methods to enable large-FOV imaging of dose-sensitive samples.
-
-    \subsection{\label{ssec:wavelets}Further Directions}
-
-    \begin{figure}
-        %
-        \includegraphics[
-            clip,width=0.5\textwidth]{dose_and_time.pdf}
-            %
-        \caption{
-        \label{fig:dose} 
-            \textbf{Total Dose and time taken. a,} The total cumulative dose as a function of the pass number. \textbf{b,} The time spent per pass, plotted in log-scale.).
-        }
-        %
-    \end{figure}
-    The hexagonal interlacing scheme as described in this work can be extended further for low-dose electron microscopy, especially for dose fractionation between multiple scanning passes.
-
+    The hexagonal interlacing scheme as described in this work can be extended further for low-dose electron microscopy, especially for dose fractionation between multiple scanning passes. 
+    %
+    As demonstrated in \autoref{fig:dose}\blu{a}, even after scanning passes, the total dose expended upon the sample is less than 10\% of the cumulative dose. 
+    %
+    This is because also the time spent per scan pass grows exponentially, as demonstrated in \autoref{fig:dose}\blu{b}, where the x-axis is plotted in the logarithmic scale.
+    %
+    Additionally, such a scan acquisition scheme opens the door for more intriguing possibilities such as varying the defocus of the electron or the photon beam with each scanning pass, and then using the progressive further scans to ``build'' up the image. 
+    %
+    Such a scheme will result in an even more dramatic reduction of total dose. 
+    %
+    The effects of such a scheme on the final image quality, is however beyond the scope of this current article.
+    %
+    Hexagonal scanning schemes also lend themselves to intriguing possibilities such as progressive wavelet decomposition from scan passes.
+    %
     Wavelets have hierarchical property and apply to hexagonal grids \cite{hex_compression} but doesn't work for point sampling methods like in scanning electron microscopy modalities.
+    %
+    The optimal sampling efficiency of hexagonal grids, along with the potential for montaging without increasing the dose (using TRHI and a loose grid), thus present an attractive opportunity for development of modality-specific methods to enable large FOV imaging of dose-sensitive samples.
 
     \section{Code and Data Availability}
 
