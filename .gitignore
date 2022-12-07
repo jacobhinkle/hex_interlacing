@@ -1,5 +1,6 @@
 result
 .direnv
 .DS_Store
+.vscode
 submission_docs
 
