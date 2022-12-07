@@ -26,6 +26,9 @@
 \usepackage{url}
 \urlstyle{same}
 
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=5mm}
+
 \usepackage{orcidlink}
 \newcommand*{\blu}{\textcolor{blue}}
 \renewcommand*{\figureautorefname}{Fig.}
@@ -37,7 +40,6 @@
 \begin{document}
 	\title{Interlaced scan patterns based on progressive hexagonal grids}
 	\author{Jacob D. Hinkle\ \orcidlink{0000-0002-7751-1760}}
-    \email{hinklejd@ornl.gov}
 	\affiliation{Computational Sciences \& Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
     \author{Debangshu Mukherjee\ \orcidlink{0000-0003-0437-9807}}
 	\email{mukherjeed@ornl.gov}
@@ -58,6 +60,21 @@
 	\end{abstract}
     
     \maketitle
+    
+    \section*{Highlights}
+    \begin{itemize}
+    \vspace{-10pt}
+    %
+    \setlength\itemsep{0em}
+    %
+    \item Demonstration and development of algorithmic design of hexagonal scanning patterns, compared to existing rectilinear scans.
+    %
+    \item Hexagonal Scan strategies developed here have been combined with interlacing for progressive scanning for dose-efficient imaging.
+    %
+    \item Rotational interlacing strategies which allow any arbitrary rectilinear region to be imaged with existing scanning setups. 
+    %
+    \item Demonstrated scan strategies are more information efficient,  cover the entire field-of-view faster and are more dose-efficient compared to the current scanning routines.
+    \end{itemize}
 	
 	\section{\label{sec:intro}Introduction}
     \blfootnote{\textsf{This manuscript has been authored by UT-Battelle, LLC under Contract No. DE-AC05-00OR22725 with the U.S. Department of Energy. 
@@ -453,18 +470,19 @@
     Unlike with a 0\% overlap rectilinear grid, the loose TRHI montage still has significant overlap, with each tile overlapping all of its six neighbors.
     %
     Using RHI in the loose configuration without trimming presents an alternative with more overlap and an average oversampling of $1.5\times$ (equivalent rectilinear overlap: 18.4\%).
-
-    \section{\label{sec:conclusion}Conclusion}
-    \begin{figure}
+    
+    \begin{figure*}
         %
-        \includegraphics[width=\linewidth]{dose_and_time.pdf}
+        \includegraphics[width=0.8\textwidth]{dose_and_time.pdf}
             %
         \caption{
         \label{fig:dose} 
             \textbf{Total Dose and time taken. a,} The total cumulative dose as a function of the pass number. \textbf{b,} The time spent per pass, plotted in log-scale.
         }
         %
-    \end{figure}
+    \end{figure*}
+
+    \section{\label{sec:conclusion}Conclusion}
 
     Interlaced scan patterns provide a potential for whole FOV information to be acquired very early in the scan.
     %
