@@ -5,6 +5,7 @@
 *.fls
 *.log
 *.swp
+*.sty
 *.out
 *.pdf
 .ipynb_checkpoints/

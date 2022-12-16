@@ -2,5 +2,6 @@ result
 .direnv
 .DS_Store
 .vscode
+*.sty
 submission_docs
 
